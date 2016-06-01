@@ -44,6 +44,10 @@ public class DrupalRunConfiguration extends PhpCommandLineRunConfiguration<Drupa
     protected void fixSettingsAfterDeserialization(@NotNull DrupalRunConfiguration.Settings settings) {
         settings.setDrupalRoot(PhpConfigurationUtil.deserializePath(settings.getDrupalRoot()));
         settings.setTestGroupExtra(PhpConfigurationUtil.deserializePath(settings.getTestGroupExtra()));
+
+        if (settings.getTestGroup() == TEST_CLASS) {
+            settings.setTestGroupExtra(settings.getTestGroupExtra().replace("/", "\\"));
+        }
     }
 
     @Override
@@ -113,6 +117,10 @@ public class DrupalRunConfiguration extends PhpCommandLineRunConfiguration<Drupa
                 break;
             case TEST_DIRECTORY:
                 command.addArgument("--directory ");
+                command.addArgument(settings.getTestGroupExtra());
+                break;
+            case TEST_CLASS:
+                command.addArgument("--class ");
                 command.addArgument(settings.getTestGroupExtra());
                 break;
             case TEST_ALL:

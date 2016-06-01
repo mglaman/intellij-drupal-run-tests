@@ -34,6 +34,8 @@ public class DrupalRunTestsSettingsEditor extends SettingsEditor<DrupalRunConfig
     private JTextField myTestModule;
     private TextFieldWithBrowseButton myTestDirectory;
     private JSpinner myTestConcurrency;
+    private JRadioButton classRadioButton;
+    private JTextField myTestClass;
 
     private final Project myProject;
 
@@ -75,6 +77,11 @@ public class DrupalRunTestsSettingsEditor extends SettingsEditor<DrupalRunConfig
                 myTestDirectory.setText(params.getTestGroupExtra());
                 myTestDirectory.setVisible(true);
                 break;
+            case DrupalRunConfiguration.TEST_CLASS:
+                classRadioButton.setSelected(true);
+                myTestClass.setText(params.getTestGroupExtra());
+                myTestClass.setVisible(true);
+                break;
             case DrupalRunConfiguration.TEST_ALL:
             default:
                 allRadioButton.setSelected(true);
@@ -101,6 +108,9 @@ public class DrupalRunTestsSettingsEditor extends SettingsEditor<DrupalRunConfig
         } else if(directoryRadioButton.isSelected()) {
             params.setTestGroup(DrupalRunConfiguration.TEST_DIRECTORY);
             params.setTestGroupExtra(myTestDirectory.getText());
+        } else if(classRadioButton.isSelected()) {
+            params.setTestGroup(DrupalRunConfiguration.TEST_CLASS);
+            params.setTestGroupExtra(myTestClass.getText());
         }
     }
 
@@ -122,6 +132,7 @@ public class DrupalRunTestsSettingsEditor extends SettingsEditor<DrupalRunConfig
         myTestGroup.setVisible(groupRadioButton.isSelected());
         myTestModule.setVisible(moduleRadioButton.isSelected());
         myTestDirectory.setVisible(directoryRadioButton.isSelected());
+        myTestClass.setVisible(classRadioButton.isSelected());
     }
 
     private void createUIComponents() {
