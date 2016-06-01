@@ -63,14 +63,17 @@ public class DrupalRunTestsSettingsEditor extends SettingsEditor<DrupalRunConfig
             case DrupalRunConfiguration.TEST_GROUP:
                 groupRadioButton.setSelected(true);
                 myTestGroup.setText(params.getTestGroupExtra());
+                myTestGroup.setVisible(true);
                 break;
             case DrupalRunConfiguration.TEST_MODULE:
                 moduleRadioButton.setSelected(true);
                 myTestModule.setText(params.getTestGroupExtra());
+                myTestModule.setVisible(true);
                 break;
             case DrupalRunConfiguration.TEST_DIRECTORY:
                 directoryRadioButton.setSelected(true);
                 myTestDirectory.setText(params.getTestGroupExtra());
+                myTestDirectory.setVisible(true);
                 break;
             case DrupalRunConfiguration.TEST_ALL:
             default:
