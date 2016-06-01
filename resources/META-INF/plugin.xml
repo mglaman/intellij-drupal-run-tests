@@ -1,0 +1,32 @@
+<idea-plugin version="2">
+  <id>com.mglaman.drupal.test_runner</id>
+  <name>Drupal Test Runner</name>
+  <version>1.0</version>
+  <vendor email="nmd.matt@gmail.com" url="https://glamanate.com">Matt Glaman</vendor>
+
+  <description><![CDATA[
+      Enter short description for your plugin here.<br>
+      <em>most HTML tags may be used</em>
+    ]]></description>
+
+  <change-notes><![CDATA[
+      Add change notes here.<br>
+      <em>most HTML tags may be used</em>
+    ]]>
+  </change-notes>
+
+  <!-- please see http://www.jetbrains.org/intellij/sdk/docs/basics/getting_started/build_number_ranges.html for description -->
+  <idea-version since-build="141.0"/>
+
+  <depends>com.jetbrains.php</depends>
+  <depends>com.intellij.modules.platform</depends>
+
+  <extensions defaultExtensionNs="com.intellij">
+    <configurationType implementation="com.mglaman.drupal_run_tests.run.configuration.DrupalRunConfigurationType"/>
+  </extensions>
+
+  <actions>
+    <!-- Add your actions here -->
+  </actions>
+
+</idea-plugin>
