@@ -8,11 +8,10 @@ With Drupal Test Runner, a new run configuration is added to PhpStorm specifical
  single runner.
 
 ## Installing the plugin
-Currently the plugin is being developed and is not yet published on the JetBrains plugin repositories. You will
-need to clone the repository and build the project.
 
-* @todo: Add a link to a Dropbox .zip file of the built project
-* @todo: Publish
+Download the plugin from https://plugins.jetbrains.com/plugin/8384 or install through PhpStorm's plugin browser.
+
+Alternatively, you can clone down the project and build it yourself.
 
 ## Using the plugin
 
