@@ -1,17 +1,20 @@
 <idea-plugin version="2">
-  <id>com.mglaman.drupal.test_runner</id>
+  <id>com.mglaman.drupal_run_tests</id>
   <name>Drupal Test Runner</name>
-  <version>1.0</version>
+  <version>1.0-alpha1</version>
   <vendor email="nmd.matt@gmail.com" url="https://glamanate.com">Matt Glaman</vendor>
 
   <description><![CDATA[
-      Enter short description for your plugin here.<br>
-      <em>most HTML tags may be used</em>
+With Drupal Test Runner, a new run configuration is added to PhpStorm specifically for Drupal's test running script
+<code>run-tests.sh</code>. This allows you to run Simpletest, Unit, Kernel, Functional, and FunctionalJavascript tests with one
+ single runner.
     ]]></description>
 
   <change-notes><![CDATA[
-      Add change notes here.<br>
-      <em>most HTML tags may be used</em>
+      <h2>1.0-alpha1</h2>
+      <ul>
+        <li>Initial work</li>
+      </ul>
     ]]>
   </change-notes>
 

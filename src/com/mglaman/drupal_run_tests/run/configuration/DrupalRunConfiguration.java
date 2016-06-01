@@ -84,8 +84,12 @@ public class DrupalRunConfiguration extends PhpCommandLineRunConfiguration<Drupa
         command.addArgument(e.getPathToPhpExecutable());
         command.addArgument("--url ");
         command.addArgument(settings.getSimpletestUrl());
-        command.addArgument("--dburl ");
-        command.addArgument(settings.getSimpletestDb());
+
+        if (settings.getSimpletestDb() != null) {
+            command.addArgument("--dburl ");
+            command.addArgument(settings.getSimpletestDb());
+        }
+
         // @todo there should be just a "Use SQLite" option
         command.addArgument("--sqlite ");
         command.addArgument("/tmp/tmp.sqlite");

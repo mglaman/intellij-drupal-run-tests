@@ -5,9 +5,6 @@ import com.intellij.openapi.options.ConfigurationException;
 import com.intellij.openapi.options.SettingsEditor;
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.ui.TextFieldWithBrowseButton;
-import com.intellij.ui.RawCommandLineEditor;
-import com.jetbrains.php.PhpBundle;
-import com.jetbrains.php.run.PhpCommandLineConfigurationEditor;
 import org.jetbrains.annotations.NotNull;
 
 import javax.swing.*;
@@ -16,7 +13,9 @@ import javax.swing.event.ChangeListener;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
-// @refer to PhpUnitConfigurableForm
+/**
+ * @author mglaman
+ */
 public class DrupalRunTestsSettingsEditor extends SettingsEditor<DrupalRunConfiguration> implements ChangeListener {
     private JPanel myMainPanel;
     private TextFieldWithBrowseButton myDrupalRoot;
@@ -36,7 +35,7 @@ public class DrupalRunTestsSettingsEditor extends SettingsEditor<DrupalRunConfig
     private TextFieldWithBrowseButton myTestDirectory;
     private JSpinner myTestConcurrency;
 
-    protected final Project myProject;
+    private final Project myProject;
 
     public DrupalRunTestsSettingsEditor(@NotNull Project project) {
         myProject = project;

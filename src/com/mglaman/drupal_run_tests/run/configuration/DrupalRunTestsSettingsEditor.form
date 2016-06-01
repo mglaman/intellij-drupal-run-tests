@@ -42,6 +42,7 @@
                 </constraints>
                 <properties>
                   <text value=""/>
+                  <toolTipText value="The URL for tests"/>
                 </properties>
               </component>
               <component id="62bd8" class="javax.swing.JLabel">
@@ -107,6 +108,7 @@
                 </constraints>
                 <properties>
                   <text value="Use verbose output"/>
+                  <toolTipText value="Tells the test runner to print out test result logs"/>
                 </properties>
               </component>
               <hspacer id="5b140">
@@ -120,6 +122,7 @@
                 </constraints>
                 <properties>
                   <text value="Color output"/>
+                  <toolTipText value="Prints test output as a color"/>
                 </properties>
               </component>
               <component id="82a25" class="javax.swing.JLabel">
@@ -175,6 +178,7 @@
                 <properties>
                   <selected value="true"/>
                   <text value="All"/>
+                  <toolTipText value="Run all test groups"/>
                 </properties>
               </component>
               <component id="afb61" class="javax.swing.JRadioButton" binding="groupRadioButton" default-binding="true">
@@ -183,6 +187,7 @@
                 </constraints>
                 <properties>
                   <text value="Group"/>
+                  <toolTipText value="Specify a group or groups of tests"/>
                 </properties>
               </component>
               <component id="12a51" class="javax.swing.JRadioButton" binding="moduleRadioButton" default-binding="true">
@@ -191,6 +196,7 @@
                 </constraints>
                 <properties>
                   <text value="Module"/>
+                  <toolTipText value="Specify a module"/>
                 </properties>
               </component>
               <component id="66a29" class="javax.swing.JRadioButton" binding="directoryRadioButton" default-binding="true">
@@ -199,6 +205,7 @@
                 </constraints>
                 <properties>
                   <text value="Directory"/>
+                  <toolTipText value="Specify a directory of tests"/>
                 </properties>
               </component>
             </children>
