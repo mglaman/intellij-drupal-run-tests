@@ -1,20 +1,27 @@
 <idea-plugin version="2">
   <id>com.mglaman.drupal_run_tests</id>
   <name>Drupal Test Runner</name>
-  <version>1.0-alpha1</version>
+  <version>1.0-alpha2</version>
   <vendor email="nmd.matt@gmail.com" url="https://glamanate.com">Matt Glaman</vendor>
 
   <description><![CDATA[
+<h1>Drupal Test Runner</h1>
+
 With Drupal Test Runner, a new run configuration is added to PhpStorm specifically for Drupal's test running script
 <code>run-tests.sh</code>. This allows you to run Simpletest, Unit, Kernel, Functional, and FunctionalJavascript tests with one
- single runner.
+single runner.
     ]]></description>
 
   <change-notes><![CDATA[
-      <h2>1.0-alpha1</h2>
-      <ul>
-        <li>Initial work</li>
-      </ul>
+<h2>1.0-alpha2</h2>
+<ul>
+  <li>Add "Class" run option </li>
+  <li>Test textfield box is not visible when opening existing config</li>
+</ul>
+<h2>1.0-alpha1</h2>
+<ul>
+  <li>Initial work</li>
+</ul>
     ]]>
   </change-notes>
 
