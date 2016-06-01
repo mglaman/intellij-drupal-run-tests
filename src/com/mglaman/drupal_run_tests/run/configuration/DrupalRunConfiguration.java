@@ -19,15 +19,17 @@ import org.jetbrains.annotations.Nullable;
 
 import java.util.Map;
 
-
+/**
+ * @author mglaman
+ */
 public class DrupalRunConfiguration extends PhpCommandLineRunConfiguration<DrupalRunConfiguration.Settings> {
     private final static String RUN_TESTS_PATH = "/core/scripts/run-tests.sh";
 
-    public final static byte TEST_ALL = 0;
-    public final static byte TEST_GROUP = 1;
-    public final static byte TEST_MODULE = 2;
-    public final static byte TEST_DIRECTORY = 3;
-    public final static byte TEST_CLASS = 4;
+    public final static int TEST_ALL = 0;
+    public final static int TEST_GROUP = 1;
+    public final static int TEST_MODULE = 2;
+    public final static int TEST_DIRECTORY = 3;
+    public final static int TEST_CLASS = 4;
 
     protected DrupalRunConfiguration(@NotNull Project project, @NotNull ConfigurationFactory factory, String name) {
         super(project, factory, name);
@@ -41,13 +43,13 @@ public class DrupalRunConfiguration extends PhpCommandLineRunConfiguration<Drupa
     @Override
     protected void fixSettingsAfterDeserialization(@NotNull DrupalRunConfiguration.Settings settings) {
         settings.setDrupalRoot(PhpConfigurationUtil.deserializePath(settings.getDrupalRoot()));
-        settings.setDrupalRoot(PhpConfigurationUtil.deserializePath(settings.getTestGroupExtra()));
+        settings.setTestGroupExtra(PhpConfigurationUtil.deserializePath(settings.getTestGroupExtra()));
     }
 
     @Override
     protected void fixSettingsBeforeSerialization(@NotNull DrupalRunConfiguration.Settings settings) {
         settings.setDrupalRoot(PhpConfigurationUtil.serializePath(settings.getDrupalRoot()));
-        settings.setDrupalRoot(PhpConfigurationUtil.serializePath(settings.getTestGroupExtra()));
+        settings.setTestGroupExtra(PhpConfigurationUtil.serializePath(settings.getTestGroupExtra()));
     }
 
     @NotNull
@@ -125,16 +127,13 @@ public class DrupalRunConfiguration extends PhpCommandLineRunConfiguration<Drupa
         return PhpExecutionUtil.getConsoleMessageFilters(project, pathMapper);
     }
 
-    /**
-     *
-     */
     public static class Settings implements PhpRunConfigurationSettings {
         private String myDrupalRoot = null;
         private String mySimpletestUrl = "http://localhost:8080";
         private String mySimpletestDb = "sqlite://localhost/sites/default/files/.ht.sqlite";
         private boolean myVerboseOutput = false;
         private boolean myColorOutput = false;
-        private byte myTestGroup = TEST_ALL;
+        private int myTestGroup = TEST_ALL;
         private String myTestGroupExtra = null;
         private PhpCommandLineSettings myCommandLineSettings = new PhpCommandLineSettings();
 
@@ -183,9 +182,9 @@ public class DrupalRunConfiguration extends PhpCommandLineRunConfiguration<Drupa
         }
 
         @Attribute("test_group")
-        public byte getTestGroup() { return this.myTestGroup; }
+        public int getTestGroup() { return this.myTestGroup; }
 
-        public void setTestGroup(byte group) { this.myTestGroup = group; }
+        public void setTestGroup(int group) { this.myTestGroup = group; }
 
         @Attribute("test_group_extra")
         public String getTestGroupExtra() { return this.myTestGroupExtra; }
