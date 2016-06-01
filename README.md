@@ -7,6 +7,8 @@ With Drupal Test Runner, a new run configuration is added to PhpStorm specifical
 `run-tests.sh`. This allows you to run Simpletest, Unit, Kernel, Functional, and FunctionalJavascript tests with one
  single runner.
 
+![Run Configruation and output](docs/Run_Debug_Configurations.png)
+
 ## Installing the plugin
 
 Download the plugin from https://plugins.jetbrains.com/plugin/8384 or install through PhpStorm's plugin browser.
