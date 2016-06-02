@@ -117,7 +117,7 @@ public class DrupalRunConfiguration extends PhpCommandLineRunConfiguration<Drupa
 
 
         command.addArgument("--concurrency");
-        command.addArgument("4");
+        command.addArgument(Integer.toString(settings.getTestConcurrency()));
 
         if (settings.hasColorOutput()) {
             command.addArgument("--color");

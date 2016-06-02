@@ -127,13 +127,13 @@
               </component>
               <component id="82a25" class="javax.swing.JLabel">
                 <constraints>
-                  <grid row="0" column="0" row-span="1" col-span="1" vsize-policy="0" hsize-policy="0" anchor="8" fill="0" indent="0" use-parent-layout="false"/>
+                  <grid row="0" column="0" row-span="1" col-span="1" vsize-policy="0" hsize-policy="0" anchor="8" fill="0" indent="1" use-parent-layout="false"/>
                 </constraints>
                 <properties>
                   <text value="Concurrency"/>
                 </properties>
               </component>
-              <component id="e7cf3" class="javax.swing.JSpinner" binding="myTestConcurrency">
+              <component id="e7cf3" class="javax.swing.JSpinner" binding="myTestConcurrency" custom-create="true">
                 <constraints>
                   <grid row="0" column="1" row-span="1" col-span="1" vsize-policy="0" hsize-policy="6" anchor="8" fill="0" indent="0" use-parent-layout="false"/>
                 </constraints>

@@ -66,6 +66,8 @@ public class DrupalRunTestsSettingsEditor extends SettingsEditor<DrupalRunConfig
         mySQLiteDb.setText(params.getSqliteDb());
         mySQLiteDb.setVisible(params.isUsingSqlite());
 
+        myTestConcurrency.setValue(params.getTestConcurrency());
+
         switch (params.getTestGroup()) {
             case DrupalRunConfiguration.TEST_GROUP:
                 groupRadioButton.setSelected(true);
@@ -102,6 +104,7 @@ public class DrupalRunTestsSettingsEditor extends SettingsEditor<DrupalRunConfig
         params.setColorOutput(myColorOutput.isSelected());
         params.setUseSqlite(myUseSqlite.isSelected());
         params.setSqliteDb(mySQLiteDb.getText());
+        params.setTestConcurrency(((SpinnerNumberModel) myTestConcurrency.getModel()).getNumber().intValue());
 
         if (allRadioButton.isSelected()) {
             params.setTestGroup(DrupalRunConfiguration.TEST_ALL);
@@ -146,5 +149,11 @@ public class DrupalRunTestsSettingsEditor extends SettingsEditor<DrupalRunConfig
         assert this.myProject != null;
         myTestDirectory = new TextFieldWithBrowseButton();
         myTestDirectory.addBrowseFolderListener(null, null, myProject, FileChooserDescriptorFactory.createSingleFolderDescriptor());
+
+        // @todo essentially copy com.intellij.ui.PortField for a concurrency editor.
+        myTestConcurrency = new JSpinner(new SpinnerNumberModel(1, 1, 30, 1));
+        JSpinner.NumberEditor concurrencyEditor = new JSpinner.NumberEditor(myTestConcurrency, "#");
+        concurrencyEditor.getTextField().setColumns(4);
+        myTestConcurrency.setEditor(concurrencyEditor);
     }
 }
