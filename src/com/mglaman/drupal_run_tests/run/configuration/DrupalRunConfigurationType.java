@@ -20,7 +20,7 @@ public class DrupalRunConfigurationType implements ConfigurationType {
     private final ConfigurationFactory myFactory = new PhpRunConfigurationFactoryBase(this) {
         @Override
         @NotNull
-        public RunConfiguration createTemplateConfiguration(@NotNull  Project project) {
+        public RunConfiguration createTemplateConfiguration(@NotNull Project project) {
             return new DrupalRunConfiguration(project, this, "");
         }
     };

@@ -18,7 +18,6 @@ import java.awt.event.ActionListener;
  */
 public class DrupalRunTestsSettingsEditor extends SettingsEditor<DrupalRunConfiguration> implements ChangeListener {
     private JPanel myMainPanel;
-    private TextFieldWithBrowseButton myDrupalRoot;
     private JTextField mySimpletestUrl;
     private JTextField mySimpletestDb;
     private JCheckBox myVerboseOutput;
@@ -55,7 +54,6 @@ public class DrupalRunTestsSettingsEditor extends SettingsEditor<DrupalRunConfig
 
     protected void resetEditorFrom(DrupalRunConfiguration configuration) {
         DrupalRunConfiguration.Settings params = configuration.getSettings();
-        myDrupalRoot.setText(params.getDrupalRoot());
         mySimpletestUrl.setText(params.getSimpletestUrl());
         mySimpletestDb.setText(params.getSimpletestDb());
         myVerboseOutput.setSelected(params.hasVerboseOutput());
@@ -91,7 +89,6 @@ public class DrupalRunTestsSettingsEditor extends SettingsEditor<DrupalRunConfig
 
     protected void applyEditorTo(DrupalRunConfiguration configuration) throws ConfigurationException {
         DrupalRunConfiguration.Settings params = configuration.getSettings();
-        params.setDrupalRoot(myDrupalRoot.getText());
         params.setSimpletestUrl(mySimpletestUrl.getText());
         params.setSimpletestDb(mySimpletestDb.getText());
         params.setVerboseOutput(myVerboseOutput.isSelected());
@@ -137,8 +134,6 @@ public class DrupalRunTestsSettingsEditor extends SettingsEditor<DrupalRunConfig
 
     private void createUIComponents() {
         assert this.myProject != null;
-        myDrupalRoot = new TextFieldWithBrowseButton();
-        myDrupalRoot.addBrowseFolderListener(null, null, myProject, FileChooserDescriptorFactory.createSingleFolderDescriptor());
         myTestDirectory = new TextFieldWithBrowseButton();
         myTestDirectory.addBrowseFolderListener(null, null, myProject, FileChooserDescriptorFactory.createSingleFolderDescriptor());
     }

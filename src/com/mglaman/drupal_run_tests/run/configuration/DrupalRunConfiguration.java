@@ -11,6 +11,8 @@ import com.intellij.util.xmlb.annotations.Property;
 import com.jetbrains.php.config.PhpProjectConfigurationFacade;
 import com.jetbrains.php.config.commandLine.PhpCommandSettings;
 import com.jetbrains.php.config.interpreters.PhpInterpreter;
+import com.jetbrains.php.drupal.DrupalVersion;
+import com.jetbrains.php.drupal.settings.DrupalDataService;
 import com.jetbrains.php.run.*;
 import com.jetbrains.php.util.PhpConfigurationUtil;
 import com.jetbrains.php.util.pathmapper.PhpPathMapper;
@@ -23,7 +25,8 @@ import java.util.Map;
  * @author mglaman
  */
 public class DrupalRunConfiguration extends PhpCommandLineRunConfiguration<DrupalRunConfiguration.Settings> {
-    private final static String RUN_TESTS_PATH = "/core/scripts/run-tests.sh";
+    private final static String D8_TESTS_PATH = "/core/scripts/run-tests.sh";
+    private final static String D7_TESTS_PATH = "/scripts/run-tests.sh";
 
     public final static int TEST_ALL = 0;
     public final static int TEST_GROUP = 1;
@@ -42,7 +45,6 @@ public class DrupalRunConfiguration extends PhpCommandLineRunConfiguration<Drupa
 
     @Override
     protected void fixSettingsAfterDeserialization(@NotNull DrupalRunConfiguration.Settings settings) {
-        settings.setDrupalRoot(PhpConfigurationUtil.deserializePath(settings.getDrupalRoot()));
         settings.setTestGroupExtra(PhpConfigurationUtil.deserializePath(settings.getTestGroupExtra()));
 
         if (settings.getTestGroup() == TEST_CLASS) {
@@ -52,7 +54,6 @@ public class DrupalRunConfiguration extends PhpCommandLineRunConfiguration<Drupa
 
     @Override
     protected void fixSettingsBeforeSerialization(@NotNull DrupalRunConfiguration.Settings settings) {
-        settings.setDrupalRoot(PhpConfigurationUtil.serializePath(settings.getDrupalRoot()));
         settings.setTestGroupExtra(PhpConfigurationUtil.serializePath(settings.getTestGroupExtra()));
     }
 
@@ -64,28 +65,41 @@ public class DrupalRunConfiguration extends PhpCommandLineRunConfiguration<Drupa
 
     @Override
     public void checkConfiguration() throws RuntimeConfigurationException {
-        DrupalRunConfiguration.Settings settings = getSettings();
-        String drupalRoot = settings.getDrupalRoot();
+        DrupalDataService drupalDataService = DrupalDataService.getInstance(getProject());
+        String drupalRoot = drupalDataService.getDrupalPath();
+
+        if (drupalDataService.getVersion() == DrupalVersion.SIX) {
+            throw new RuntimeConfigurationException("Drupal 6 is not supported, sorry.");
+        }
 
         if (PhpRunUtil.findDirectory(drupalRoot) == null) {
-            throw new RuntimeConfigurationException("Invalid directory");
+            // @todo Can we link to a shortcut to configure Drupal?s
+            throw new RuntimeConfigurationException("Invalid Drupal directory configured for this project.");
         }
-        if (PhpRunUtil.findFile(drupalRoot + RUN_TESTS_PATH) == null) {
-            throw new RuntimeConfigurationException("Unable to locate Drupal test runner script");
-        }
+
         PhpRunUtil.checkPhpInterpreter(getProject());
+
+        DrupalRunConfiguration.Settings settings = getSettings();
         PhpRunUtil.checkCommandLineSettings(settings.getCommandLineSettings());
     }
 
     public void fillCommandSettings(@NotNull Map<String, String> env, @NotNull PhpCommandSettings command) throws ExecutionException {
         DrupalRunConfiguration.Settings settings = this.getSettings();
-        String drupalRoot = settings.getDrupalRoot();
-        PhpInterpreter e = PhpProjectConfigurationFacade.getInstance(getProject()).getInterpreter();
+
+        DrupalDataService drupalDataService = DrupalDataService.getInstance(getProject());
+        String drupalRoot = drupalDataService.getDrupalPath();
 
         // @todo this is messy, but works for now ;)
-        command.setScript(drupalRoot + RUN_TESTS_PATH, true);
+        if (drupalDataService.getVersion() == DrupalVersion.EIGHT) {
+            command.setScript(drupalRoot + D8_TESTS_PATH, true);
+        } else if (drupalDataService.getVersion() == DrupalVersion.SEVEN) {
+            command.setScript(drupalRoot + D7_TESTS_PATH, true);
+        }
+
         command.addArgument("--php ");
+        PhpInterpreter e = PhpProjectConfigurationFacade.getInstance(getProject()).getInterpreter();
         command.addArgument(e.getPathToPhpExecutable());
+
         command.addArgument("--url ");
         command.addArgument(settings.getSimpletestUrl());
 
@@ -107,26 +121,33 @@ public class DrupalRunConfiguration extends PhpCommandLineRunConfiguration<Drupa
             command.addArgument("--verbose");
         }
 
+        String testGroup, testGroupExtra = null;
+
         switch (settings.getTestGroup()) {
             case TEST_GROUP:
-                command.addArgument(settings.getTestGroupExtra());
+                testGroup = settings.getTestGroupExtra();
                 break;
             case TEST_MODULE:
-                command.addArgument("--module ");
-                command.addArgument(settings.getTestGroupExtra());
+                testGroup = "--module ";
+                testGroupExtra = settings.getTestGroupExtra();
                 break;
             case TEST_DIRECTORY:
-                command.addArgument("--directory ");
-                command.addArgument(settings.getTestGroupExtra());
+                testGroup = "--directory ";
+                testGroupExtra = settings.getTestGroupExtra();
                 break;
             case TEST_CLASS:
-                command.addArgument("--class ");
-                command.addArgument(settings.getTestGroupExtra());
+                testGroup = "--class ";
+                testGroupExtra = settings.getTestGroupExtra();
                 break;
             case TEST_ALL:
             default:
-                command.addArgument("--all");
+                testGroup = "--all";
                 break;
+        }
+
+        command.addArgument(testGroup);
+        if (testGroupExtra != null) {
+            command.addArgument(testGroupExtra);
         }
 
         command.importCommandLineSettings(settings.getCommandLineSettings(), drupalRoot);
@@ -140,24 +161,14 @@ public class DrupalRunConfiguration extends PhpCommandLineRunConfiguration<Drupa
     }
 
     public static class Settings implements PhpRunConfigurationSettings {
-        private String myDrupalRoot = null;
         private String mySimpletestUrl = "http://localhost:8080";
         private String mySimpletestDb = "sqlite://localhost/sites/default/files/.ht.sqlite";
         private boolean myVerboseOutput = false;
         private boolean myColorOutput = false;
         private int myTestGroup = TEST_ALL;
         private String myTestGroupExtra = null;
+        private int myTestConcurrency = 1;
         private PhpCommandLineSettings myCommandLineSettings = new PhpCommandLineSettings();
-
-        @Attribute("drupal_root")
-        @Nullable
-        public String getDrupalRoot() {
-            return this.myDrupalRoot;
-        }
-
-        public void setDrupalRoot(@Nullable String path) {
-            this.myDrupalRoot = StringUtil.nullize(path);
-        }
 
         @Attribute("simpletest_url")
         @NotNull
@@ -202,6 +213,11 @@ public class DrupalRunConfiguration extends PhpCommandLineRunConfiguration<Drupa
         public String getTestGroupExtra() { return this.myTestGroupExtra; }
 
         public void setTestGroupExtra(String groupExtra) { this.myTestGroupExtra = groupExtra; }
+
+        @Attribute("concurrency")
+        public int getTestConcurrency() { return this.myTestConcurrency; }
+
+        public void setTestConcurrency(int concurrency) { this.myTestConcurrency = concurrency; }
 
         @Property(
                 surroundWithTag = false
