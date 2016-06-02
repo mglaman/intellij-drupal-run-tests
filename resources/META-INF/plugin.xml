@@ -1,7 +1,7 @@
 <idea-plugin version="2">
   <id>com.mglaman.drupal_run_tests</id>
   <name>Drupal Test Runner</name>
-  <version>1.0-alpha2</version>
+  <version>1.0-alpha3</version>
   <vendor email="nmd.matt@gmail.com" url="https://glamanate.com">Matt Glaman</vendor>
 
   <description><![CDATA[
@@ -13,6 +13,14 @@ single runner.
     ]]></description>
 
   <change-notes><![CDATA[
+<p>1.0-alpha3:</p>
+<ul>
+  <li>Add CONTRIBUTING.md</li>
+  <li>Concurrency number field doesn't work</li>
+  <li>Remove hardcoded --sqlite</li>
+  <li>Support Drupal 7</li>
+</ul>
+
 <h2>1.0-alpha2</h2>
 <ul>
   <li>Add "Class" run option </li>
