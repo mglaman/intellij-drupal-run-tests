@@ -46,6 +46,7 @@ public class DrupalRunConfiguration extends PhpCommandLineRunConfiguration<Drupa
     @Override
     protected void fixSettingsAfterDeserialization(@NotNull DrupalRunConfiguration.Settings settings) {
         settings.setTestGroupExtra(PhpConfigurationUtil.deserializePath(settings.getTestGroupExtra()));
+        settings.setSqliteDb(PhpConfigurationUtil.deserializePath(settings.getSqliteDb()));
 
         if (settings.getTestGroup() == TEST_CLASS) {
             settings.setTestGroupExtra(settings.getTestGroupExtra().replace("/", "\\"));
@@ -55,6 +56,7 @@ public class DrupalRunConfiguration extends PhpCommandLineRunConfiguration<Drupa
     @Override
     protected void fixSettingsBeforeSerialization(@NotNull DrupalRunConfiguration.Settings settings) {
         settings.setTestGroupExtra(PhpConfigurationUtil.serializePath(settings.getTestGroupExtra()));
+        settings.setSqliteDb(PhpConfigurationUtil.serializePath(settings.getSqliteDb()));
     }
 
     @NotNull
@@ -108,9 +110,12 @@ public class DrupalRunConfiguration extends PhpCommandLineRunConfiguration<Drupa
             command.addArgument(settings.getSimpletestDb());
         }
 
-        // @todo there should be just a "Use SQLite" option
-        command.addArgument("--sqlite ");
-        command.addArgument("/tmp/tmp.sqlite");
+        if (settings.isUsingSqlite()) {
+            command.addArgument("--sqlite ");
+            command.addArgument(settings.getSqliteDb());
+        }
+
+
         command.addArgument("--concurrency");
         command.addArgument("4");
 
@@ -162,7 +167,9 @@ public class DrupalRunConfiguration extends PhpCommandLineRunConfiguration<Drupa
 
     public static class Settings implements PhpRunConfigurationSettings {
         private String mySimpletestUrl = "http://localhost:8080";
-        private String mySimpletestDb = "sqlite://localhost/sites/default/files/.ht.sqlite";
+        private String mySimpletestDb = null;
+        private boolean myUseSqlite = false;
+        private String mySqliteDb = "/tmp/tmp.sqlite";
         private boolean myVerboseOutput = false;
         private boolean myColorOutput = false;
         private int myTestGroup = TEST_ALL;
@@ -189,6 +196,16 @@ public class DrupalRunConfiguration extends PhpCommandLineRunConfiguration<Drupa
         public void setSimpletestDb(@Nullable String db) {
             this.mySimpletestDb = StringUtil.nullize(db);
         }
+
+        @Attribute("use_sqlite")
+        public boolean isUsingSqlite() { return this.myUseSqlite; }
+
+        public void setUseSqlite(boolean use) { this.myUseSqlite = use; }
+
+        @Attribute("sqlite_db")
+        public String getSqliteDb() { return this.mySqliteDb; }
+
+        public void setSqliteDb(String db) { this.mySqliteDb = db; }
 
         @Attribute("verbose")
         public boolean hasVerboseOutput() { return this.myVerboseOutput; }

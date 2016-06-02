@@ -35,6 +35,8 @@ public class DrupalRunTestsSettingsEditor extends SettingsEditor<DrupalRunConfig
     private JSpinner myTestConcurrency;
     private JRadioButton classRadioButton;
     private JTextField myTestClass;
+    private JCheckBox myUseSqlite;
+    private JTextField mySQLiteDb;
 
     private final Project myProject;
 
@@ -50,6 +52,7 @@ public class DrupalRunTestsSettingsEditor extends SettingsEditor<DrupalRunConfig
         groupRadioButton.addActionListener(updateStateActionListener);
         moduleRadioButton.addActionListener(updateStateActionListener);
         directoryRadioButton.addActionListener(updateStateActionListener);
+        myUseSqlite.addActionListener(updateStateActionListener);
     }
 
     protected void resetEditorFrom(DrupalRunConfiguration configuration) {
@@ -58,6 +61,10 @@ public class DrupalRunTestsSettingsEditor extends SettingsEditor<DrupalRunConfig
         mySimpletestDb.setText(params.getSimpletestDb());
         myVerboseOutput.setSelected(params.hasVerboseOutput());
         myColorOutput.setSelected(params.hasColorOutput());
+
+        myUseSqlite.setSelected(params.isUsingSqlite());
+        mySQLiteDb.setText(params.getSqliteDb());
+        mySQLiteDb.setVisible(params.isUsingSqlite());
 
         switch (params.getTestGroup()) {
             case DrupalRunConfiguration.TEST_GROUP:
@@ -93,6 +100,8 @@ public class DrupalRunTestsSettingsEditor extends SettingsEditor<DrupalRunConfig
         params.setSimpletestDb(mySimpletestDb.getText());
         params.setVerboseOutput(myVerboseOutput.isSelected());
         params.setColorOutput(myColorOutput.isSelected());
+        params.setUseSqlite(myUseSqlite.isSelected());
+        params.setSqliteDb(mySQLiteDb.getText());
 
         if (allRadioButton.isSelected()) {
             params.setTestGroup(DrupalRunConfiguration.TEST_ALL);
@@ -130,6 +139,7 @@ public class DrupalRunTestsSettingsEditor extends SettingsEditor<DrupalRunConfig
         myTestModule.setVisible(moduleRadioButton.isSelected());
         myTestDirectory.setVisible(directoryRadioButton.isSelected());
         myTestClass.setVisible(classRadioButton.isSelected());
+        mySQLiteDb.setVisible(myUseSqlite.isSelected());
     }
 
     private void createUIComponents() {
