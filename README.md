@@ -21,7 +21,7 @@ Alternatively, you can clone down the project and build it yourself.
 
 ## Contributing
 
-* @todo document how to setup environment, because documentation kind of stinks on it
+See [Setting up an Environment](https://github.com/mglaman/intellij-drupal-run-tests/wiki/Setting-up-IntelliJ-IDEA-CE-for-development)
 
 
 
