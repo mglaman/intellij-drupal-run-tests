@@ -37,6 +37,7 @@ public class DrupalRunTestsSettingsEditor extends SettingsEditor<DrupalRunConfig
     private JTextField myTestClass;
     private JCheckBox myUseSqlite;
     private JTextField mySQLiteDb;
+    private JCheckBox dieOnFailureCheckBox;
 
     private final Project myProject;
 
@@ -61,6 +62,7 @@ public class DrupalRunTestsSettingsEditor extends SettingsEditor<DrupalRunConfig
         mySimpletestDb.setText(params.getSimpletestDb());
         myVerboseOutput.setSelected(params.hasVerboseOutput());
         myColorOutput.setSelected(params.hasColorOutput());
+        dieOnFailureCheckBox.setSelected(params.hasDieOnFail());
 
         myUseSqlite.setSelected(params.isUsingSqlite());
         mySQLiteDb.setText(params.getSqliteDb());
@@ -105,6 +107,7 @@ public class DrupalRunTestsSettingsEditor extends SettingsEditor<DrupalRunConfig
         params.setUseSqlite(myUseSqlite.isSelected());
         params.setSqliteDb(mySQLiteDb.getText());
         params.setTestConcurrency(((SpinnerNumberModel) myTestConcurrency.getModel()).getNumber().intValue());
+        params.setDieOnFail(dieOnFailureCheckBox.isSelected());
 
         if (allRadioButton.isSelected()) {
             params.setTestGroup(DrupalRunConfiguration.TEST_ALL);

@@ -3,7 +3,7 @@
   <grid id="27dc6" binding="myMainPanel" layout-manager="GridLayoutManager" row-count="7" column-count="1" same-size-horizontally="false" same-size-vertically="false" hgap="-1" vgap="-1">
     <margin top="0" left="0" bottom="0" right="0"/>
     <constraints>
-      <xy x="20" y="20" width="558" height="488"/>
+      <xy x="20" y="20" width="558" height="497"/>
     </constraints>
     <properties/>
     <border type="none"/>
@@ -94,7 +94,7 @@
           <color color="-4473925"/>
         </border>
         <children>
-          <grid id="28773" layout-manager="GridLayoutManager" row-count="3" column-count="2" same-size-horizontally="false" same-size-vertically="false" hgap="-1" vgap="-1">
+          <grid id="28773" layout-manager="GridLayoutManager" row-count="4" column-count="2" same-size-horizontally="false" same-size-vertically="false" hgap="-1" vgap="-1">
             <margin top="0" left="0" bottom="0" right="0"/>
             <constraints>
               <grid row="0" column="0" row-span="1" col-span="1" vsize-policy="3" hsize-policy="3" anchor="0" fill="3" indent="0" use-parent-layout="false"/>
@@ -139,6 +139,15 @@
                 </constraints>
                 <properties>
                   <toolTipText value="The number of tests to run consecutively"/>
+                </properties>
+              </component>
+              <component id="26a1c" class="javax.swing.JCheckBox" binding="dieOnFailureCheckBox" default-binding="true">
+                <constraints>
+                  <grid row="3" column="0" row-span="1" col-span="1" vsize-policy="0" hsize-policy="3" anchor="8" fill="0" indent="0" use-parent-layout="false"/>
+                </constraints>
+                <properties>
+                  <text value="Simpletest database and files on fail"/>
+                  <toolTipText value="Test runner will exit on first failure and not do clean up for failed tests"/>
                 </properties>
               </component>
             </children>

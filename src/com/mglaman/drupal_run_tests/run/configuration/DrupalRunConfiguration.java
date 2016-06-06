@@ -125,6 +125,9 @@ public class DrupalRunConfiguration extends PhpCommandLineRunConfiguration<Drupa
         if (settings.hasVerboseOutput()) {
             command.addArgument("--verbose");
         }
+        if (settings.hasDieOnFail()) {
+            command.addArgument("--die-on-fail");
+        }
 
         String testGroup, testGroupExtra = null;
 
@@ -175,6 +178,7 @@ public class DrupalRunConfiguration extends PhpCommandLineRunConfiguration<Drupa
         private int myTestGroup = TEST_ALL;
         private String myTestGroupExtra = null;
         private int myTestConcurrency = 1;
+        private boolean myDieOnFail = false;
         private PhpCommandLineSettings myCommandLineSettings = new PhpCommandLineSettings();
 
         @Attribute("simpletest_url")
@@ -235,6 +239,13 @@ public class DrupalRunConfiguration extends PhpCommandLineRunConfiguration<Drupa
         public int getTestConcurrency() { return this.myTestConcurrency; }
 
         public void setTestConcurrency(int concurrency) { this.myTestConcurrency = concurrency; }
+
+        @Attribute("die_on_fail")
+        public boolean hasDieOnFail() { return this.myDieOnFail; }
+
+        public void setDieOnFail(boolean dieOnFail) {
+            this.myDieOnFail = dieOnFail;
+        }
 
         @Property(
                 surroundWithTag = false
