@@ -8,12 +8,15 @@ import com.intellij.openapi.project.Project;
 import com.intellij.openapi.util.text.StringUtil;
 import com.intellij.util.xmlb.annotations.Attribute;
 import com.intellij.util.xmlb.annotations.Property;
+import com.jetbrains.php.config.PhpProjectConfigurable;
 import com.jetbrains.php.config.PhpProjectConfigurationFacade;
 import com.jetbrains.php.config.commandLine.PhpCommandSettings;
 import com.jetbrains.php.config.interpreters.PhpInterpreter;
 import com.jetbrains.php.drupal.DrupalVersion;
+import com.jetbrains.php.drupal.settings.DrupalConfigurable;
 import com.jetbrains.php.drupal.settings.DrupalDataService;
 import com.jetbrains.php.run.*;
+import com.jetbrains.php.ui.PhpUiUtil;
 import com.jetbrains.php.util.PhpConfigurationUtil;
 import com.jetbrains.php.util.pathmapper.PhpPathMapper;
 import org.jetbrains.annotations.NotNull;
@@ -76,13 +79,22 @@ public class DrupalRunConfiguration extends PhpCommandLineRunConfiguration<Drupa
 
         if (PhpRunUtil.findDirectory(drupalRoot) == null) {
             // @todo Can we link to a shortcut to configure Drupal?s
-            throw new RuntimeConfigurationException("Invalid Drupal directory configured for this project.");
+            throw new RuntimeConfigurationError("Invalid Drupal directory configured for this project.", createDrupalFix(getProject()));
         }
 
         PhpRunUtil.checkPhpInterpreter(getProject());
 
         DrupalRunConfiguration.Settings settings = getSettings();
         PhpRunUtil.checkCommandLineSettings(settings.getCommandLineSettings());
+    }
+
+    @NotNull
+    public static Runnable createDrupalFix(@NotNull final Project project) {
+        return new Runnable() {
+            public void run() {
+                PhpUiUtil.editConfigurable(project, new DrupalConfigurable(project));
+            }
+        };
     }
 
     public void fillCommandSettings(@NotNull Map<String, String> env, @NotNull PhpCommandSettings command) throws ExecutionException {
