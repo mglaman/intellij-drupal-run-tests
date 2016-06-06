@@ -38,6 +38,8 @@ public class DrupalRunTestsSettingsEditor extends SettingsEditor<DrupalRunConfig
     private JCheckBox myUseSqlite;
     private JTextField mySQLiteDb;
     private JCheckBox dieOnFailureCheckBox;
+    private JCheckBox repeatCheckBox;
+    private JSpinner myRepeatCount;
 
     private final Project myProject;
 
@@ -54,6 +56,7 @@ public class DrupalRunTestsSettingsEditor extends SettingsEditor<DrupalRunConfig
         moduleRadioButton.addActionListener(updateStateActionListener);
         directoryRadioButton.addActionListener(updateStateActionListener);
         myUseSqlite.addActionListener(updateStateActionListener);
+        repeatCheckBox.addActionListener(updateStateActionListener);
     }
 
     protected void resetEditorFrom(DrupalRunConfiguration configuration) {
@@ -67,6 +70,10 @@ public class DrupalRunTestsSettingsEditor extends SettingsEditor<DrupalRunConfig
         myUseSqlite.setSelected(params.isUsingSqlite());
         mySQLiteDb.setText(params.getSqliteDb());
         mySQLiteDb.setVisible(params.isUsingSqlite());
+
+        repeatCheckBox.setSelected(params.hasRepeat());
+        myRepeatCount.setValue(params.getRepeatCount());
+        myRepeatCount.setVisible(params.hasRepeat());
 
         myTestConcurrency.setValue(params.getTestConcurrency());
 
@@ -108,6 +115,8 @@ public class DrupalRunTestsSettingsEditor extends SettingsEditor<DrupalRunConfig
         params.setSqliteDb(mySQLiteDb.getText());
         params.setTestConcurrency(((SpinnerNumberModel) myTestConcurrency.getModel()).getNumber().intValue());
         params.setDieOnFail(dieOnFailureCheckBox.isSelected());
+        params.setHasRepeat(repeatCheckBox.isSelected());
+        params.setRepeatCount(((SpinnerNumberModel) myRepeatCount.getModel()).getNumber().intValue());
 
         if (allRadioButton.isSelected()) {
             params.setTestGroup(DrupalRunConfiguration.TEST_ALL);
@@ -146,6 +155,7 @@ public class DrupalRunTestsSettingsEditor extends SettingsEditor<DrupalRunConfig
         myTestDirectory.setVisible(directoryRadioButton.isSelected());
         myTestClass.setVisible(classRadioButton.isSelected());
         mySQLiteDb.setVisible(myUseSqlite.isSelected());
+        myRepeatCount.setVisible(repeatCheckBox.isSelected());
     }
 
     private void createUIComponents() {
@@ -158,5 +168,10 @@ public class DrupalRunTestsSettingsEditor extends SettingsEditor<DrupalRunConfig
         JSpinner.NumberEditor concurrencyEditor = new JSpinner.NumberEditor(myTestConcurrency, "#");
         concurrencyEditor.getTextField().setColumns(4);
         myTestConcurrency.setEditor(concurrencyEditor);
+
+        myRepeatCount = new JSpinner(new SpinnerNumberModel(1, 1, 30, 1));
+        JSpinner.NumberEditor repeatEditor = new JSpinner.NumberEditor(myRepeatCount, "#");
+        repeatEditor.getTextField().setColumns(4);
+        myRepeatCount.setEditor(repeatEditor);
     }
 }

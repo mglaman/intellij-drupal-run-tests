@@ -128,6 +128,10 @@ public class DrupalRunConfiguration extends PhpCommandLineRunConfiguration<Drupa
         if (settings.hasDieOnFail()) {
             command.addArgument("--die-on-fail");
         }
+        if (settings.hasRepeat()) {
+            command.addArgument("--repeat ");
+            command.addArgument(Integer.toString(settings.getRepeatCount()));
+        }
 
         String testGroup, testGroupExtra = null;
 
@@ -179,6 +183,8 @@ public class DrupalRunConfiguration extends PhpCommandLineRunConfiguration<Drupa
         private String myTestGroupExtra = null;
         private int myTestConcurrency = 1;
         private boolean myDieOnFail = false;
+        private boolean myUseRepeat = false;
+        private int myRepeatCount = 1;
         private PhpCommandLineSettings myCommandLineSettings = new PhpCommandLineSettings();
 
         @Attribute("simpletest_url")
@@ -246,6 +252,16 @@ public class DrupalRunConfiguration extends PhpCommandLineRunConfiguration<Drupa
         public void setDieOnFail(boolean dieOnFail) {
             this.myDieOnFail = dieOnFail;
         }
+
+        @Attribute("repeat")
+        public boolean hasRepeat() { return this.myUseRepeat; }
+
+        public void setHasRepeat(boolean repeat) { this.myUseRepeat = repeat; }
+
+        @Attribute("repeat_count")
+        public int getRepeatCount() { return this.myRepeatCount; }
+
+        public void setRepeatCount(int count) { this.myRepeatCount = count; }
 
         @Property(
                 surroundWithTag = false
