@@ -13,6 +13,17 @@ single runner.
     ]]></description>
 
   <change-notes><![CDATA[
+<p>1.0-beta1:</p>
+<ul>
+  <li>Allow debugging like phpunit tests. (<a href="https://github.com/mglaman/intellij-drupal-run-tests/issues/14">#14</a>)</li>
+  <li>Clean up and configuration class and command building.</li>
+  <li>Add utility to help build test runner command.</li>
+  <li>If Drupal path isn't configured, error for run configuration should link to settings form. (<a href="https://github.com/mglaman/intellij-drupal-run-tests/issues/7">#7</a>)</li>
+  <li>Document how to setup environment for contributing (<a href="https://github.com/mglaman/intellij-drupal-run-tests/issues/9">#9</a>)</li>
+  <li>Add support for "repeat" (<a href="https://github.com/mglaman/intellij-drupal-run-tests/issues/11">#11</a>)</li>
+  <li>Support "die-on-fail" (Fix <a href="https://github.com/mglaman/intellij-drupal-run-tests/issues/13">#13</a>)</li>
+</ul>
+
 <p>1.0-alpha3:</p>
 <ul>
   <li>Add CONTRIBUTING.md</li>
