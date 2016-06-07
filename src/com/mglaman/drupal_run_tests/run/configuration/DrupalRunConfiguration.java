@@ -30,6 +30,9 @@ import com.jetbrains.php.util.pathmapper.PhpPathMapper;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
+import java.util.Collections;
+import java.util.Map;
+
 /**
  * @author mglaman
  */
@@ -127,7 +130,7 @@ public class DrupalRunConfiguration extends PhpRefactoringListenerRunConfigurati
                 @NotNull
                 protected ProcessHandler startProcess() throws ExecutionException {
                     // Build the command.
-                    DrupalRunConfiguration.this.buildCommand(command);
+                    DrupalRunConfiguration.this.buildCommand(Collections.<String, String>emptyMap(), command);
                     ProcessHandler processHandler = DrupalRunConfiguration.this.createProcessHandler(project, command);
                     PhpRunUtil.attachProcessOutputDebugDumper(processHandler);
                     ProcessTerminatedListener.attach(processHandler, project);
@@ -151,7 +154,7 @@ public class DrupalRunConfiguration extends PhpRefactoringListenerRunConfigurati
     }
 
 
-    public void buildCommand(@NotNull PhpCommandSettings command) throws ExecutionException {
+    public void buildCommand(@NotNull Map<String, String> env, @NotNull PhpCommandSettings command) throws ExecutionException {
         Project project = getProject();
         DrupalRunConfiguration.Settings settings = this.getSettings();
         DrupalDataService drupalDataService = DrupalDataService.getInstance(project);
@@ -209,6 +212,7 @@ public class DrupalRunConfiguration extends PhpRefactoringListenerRunConfigurati
         DrupalRunTestsExecutionUtil.setTestGroup(command, settings.getTestGroup(), settings.getTestGroupExtra());
 
         command.importCommandLineSettings(settings.getCommandLineSettings(), drupalRoot);
+        command.addEnvs(env);
 
     }
 
