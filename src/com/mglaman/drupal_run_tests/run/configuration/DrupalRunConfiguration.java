@@ -1,14 +1,16 @@
 package com.mglaman.drupal_run_tests.run.configuration;
 
 import com.intellij.execution.ExecutionException;
-import com.intellij.execution.configurations.*;
+import com.intellij.execution.configurations.ConfigurationFactory;
+import com.intellij.execution.configurations.RunConfiguration;
+import com.intellij.execution.configurations.RuntimeConfigurationError;
+import com.intellij.execution.configurations.RuntimeConfigurationException;
 import com.intellij.execution.filters.Filter;
 import com.intellij.openapi.options.SettingsEditor;
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.util.text.StringUtil;
 import com.intellij.util.xmlb.annotations.Attribute;
 import com.intellij.util.xmlb.annotations.Property;
-import com.jetbrains.php.config.PhpProjectConfigurable;
 import com.jetbrains.php.config.PhpProjectConfigurationFacade;
 import com.jetbrains.php.config.commandLine.PhpCommandSettings;
 import com.jetbrains.php.config.interpreters.PhpInterpreter;
@@ -28,14 +30,6 @@ import java.util.Map;
  * @author mglaman
  */
 public class DrupalRunConfiguration extends PhpCommandLineRunConfiguration<DrupalRunConfiguration.Settings> {
-    private final static String D8_TESTS_PATH = "/core/scripts/run-tests.sh";
-    private final static String D7_TESTS_PATH = "/scripts/run-tests.sh";
-
-    public final static int TEST_ALL = 0;
-    public final static int TEST_GROUP = 1;
-    public final static int TEST_MODULE = 2;
-    public final static int TEST_DIRECTORY = 3;
-    public final static int TEST_CLASS = 4;
 
     protected DrupalRunConfiguration(@NotNull Project project, @NotNull ConfigurationFactory factory, String name) {
         super(project, factory, name);
@@ -51,7 +45,7 @@ public class DrupalRunConfiguration extends PhpCommandLineRunConfiguration<Drupa
         settings.setTestGroupExtra(PhpConfigurationUtil.deserializePath(settings.getTestGroupExtra()));
         settings.setSqliteDb(PhpConfigurationUtil.deserializePath(settings.getSqliteDb()));
 
-        if (settings.getTestGroup() == TEST_CLASS) {
+        if (settings.getTestGroup() == DrupalRunTestsExecutionUtil.TEST_CLASS) {
             settings.setTestGroupExtra(settings.getTestGroupExtra().replace("/", "\\"));
         }
     }
@@ -89,7 +83,7 @@ public class DrupalRunConfiguration extends PhpCommandLineRunConfiguration<Drupa
     }
 
     @NotNull
-    public static Runnable createDrupalFix(@NotNull final Project project) {
+    private static Runnable createDrupalFix(@NotNull final Project project) {
         return new Runnable() {
             public void run() {
                 PhpUiUtil.editConfigurable(project, new DrupalConfigurable(project));
@@ -98,32 +92,35 @@ public class DrupalRunConfiguration extends PhpCommandLineRunConfiguration<Drupa
     }
 
     public void fillCommandSettings(@NotNull Map<String, String> env, @NotNull PhpCommandSettings command) throws ExecutionException {
+        Project project = getProject();
         DrupalRunConfiguration.Settings settings = this.getSettings();
-
-        DrupalDataService drupalDataService = DrupalDataService.getInstance(getProject());
+        DrupalDataService drupalDataService = DrupalDataService.getInstance(project);
         String drupalRoot = drupalDataService.getDrupalPath();
 
-        // @todo this is messy, but works for now ;)
-        if (drupalDataService.getVersion() == DrupalVersion.EIGHT) {
-            command.setScript(drupalRoot + D8_TESTS_PATH, true);
-        } else if (drupalDataService.getVersion() == DrupalVersion.SEVEN) {
-            command.setScript(drupalRoot + D7_TESTS_PATH, true);
+        // Discover the proper path to the run-tests.sh script.
+        try {
+            command.setScript(DrupalRunTestsExecutionUtil.getRunTestsPath(project, drupalDataService.getVersion()), true);
+        } catch (DrupalVersionException dve) {
+            throw new ExecutionException(dve);
         }
 
-        command.addArgument("--php ");
-        PhpInterpreter e = PhpProjectConfigurationFacade.getInstance(getProject()).getInterpreter();
+        PhpInterpreter e = PhpProjectConfigurationFacade.getInstance(project).getInterpreter();
+        if (e == null) {
+            throw new ExecutionException("Unable to find PHP executable");
+        }
+        command.addArgument("--php");
         command.addArgument(e.getPathToPhpExecutable());
 
-        command.addArgument("--url ");
+        command.addArgument("--url");
         command.addArgument(settings.getSimpletestUrl());
 
         if (settings.getSimpletestDb() != null) {
-            command.addArgument("--dburl ");
+            command.addArgument("--dburl");
             command.addArgument(settings.getSimpletestDb());
         }
 
         if (settings.isUsingSqlite()) {
-            command.addArgument("--sqlite ");
+            command.addArgument("--sqlite");
             command.addArgument(settings.getSqliteDb());
         }
 
@@ -141,38 +138,15 @@ public class DrupalRunConfiguration extends PhpCommandLineRunConfiguration<Drupa
             command.addArgument("--die-on-fail");
         }
         if (settings.hasRepeat()) {
-            command.addArgument("--repeat ");
+            command.addArgument("--repeat");
             command.addArgument(Integer.toString(settings.getRepeatCount()));
         }
 
-        String testGroup, testGroupExtra = null;
+        // @todo This saves each test result individually. Can we parse this.
+//        command.addArgument("--xml ");
+//        command.addArgument("/tmp/drupal-tests");
 
-        switch (settings.getTestGroup()) {
-            case TEST_GROUP:
-                testGroup = settings.getTestGroupExtra();
-                break;
-            case TEST_MODULE:
-                testGroup = "--module ";
-                testGroupExtra = settings.getTestGroupExtra();
-                break;
-            case TEST_DIRECTORY:
-                testGroup = "--directory ";
-                testGroupExtra = settings.getTestGroupExtra();
-                break;
-            case TEST_CLASS:
-                testGroup = "--class ";
-                testGroupExtra = settings.getTestGroupExtra();
-                break;
-            case TEST_ALL:
-            default:
-                testGroup = "--all";
-                break;
-        }
-
-        command.addArgument(testGroup);
-        if (testGroupExtra != null) {
-            command.addArgument(testGroupExtra);
-        }
+        DrupalRunTestsExecutionUtil.setTestGroup(command, settings.getTestGroup(), settings.getTestGroupExtra());
 
         command.importCommandLineSettings(settings.getCommandLineSettings(), drupalRoot);
         command.addEnvs(env);
@@ -191,7 +165,7 @@ public class DrupalRunConfiguration extends PhpCommandLineRunConfiguration<Drupa
         private String mySqliteDb = "/tmp/tmp.sqlite";
         private boolean myVerboseOutput = false;
         private boolean myColorOutput = false;
-        private int myTestGroup = TEST_ALL;
+        private int myTestGroup = DrupalRunTestsExecutionUtil.TEST_ALL;
         private String myTestGroupExtra = null;
         private int myTestConcurrency = 1;
         private boolean myDieOnFail = false;

@@ -43,7 +43,7 @@ public class DrupalRunTestsSettingsEditor extends SettingsEditor<DrupalRunConfig
 
     private final Project myProject;
 
-    public DrupalRunTestsSettingsEditor(@NotNull Project project) {
+    DrupalRunTestsSettingsEditor(@NotNull Project project) {
         myProject = project;
 
         ActionListener updateStateActionListener = new ActionListener() {
@@ -78,27 +78,27 @@ public class DrupalRunTestsSettingsEditor extends SettingsEditor<DrupalRunConfig
         myTestConcurrency.setValue(params.getTestConcurrency());
 
         switch (params.getTestGroup()) {
-            case DrupalRunConfiguration.TEST_GROUP:
+            case DrupalRunTestsExecutionUtil.TEST_GROUP:
                 groupRadioButton.setSelected(true);
                 myTestGroup.setText(params.getTestGroupExtra());
                 myTestGroup.setVisible(true);
                 break;
-            case DrupalRunConfiguration.TEST_MODULE:
+            case DrupalRunTestsExecutionUtil.TEST_MODULE:
                 moduleRadioButton.setSelected(true);
                 myTestModule.setText(params.getTestGroupExtra());
                 myTestModule.setVisible(true);
                 break;
-            case DrupalRunConfiguration.TEST_DIRECTORY:
+            case DrupalRunTestsExecutionUtil.TEST_DIRECTORY:
                 directoryRadioButton.setSelected(true);
                 myTestDirectory.setText(params.getTestGroupExtra());
                 myTestDirectory.setVisible(true);
                 break;
-            case DrupalRunConfiguration.TEST_CLASS:
+            case DrupalRunTestsExecutionUtil.TEST_CLASS:
                 classRadioButton.setSelected(true);
                 myTestClass.setText(params.getTestGroupExtra());
                 myTestClass.setVisible(true);
                 break;
-            case DrupalRunConfiguration.TEST_ALL:
+            case DrupalRunTestsExecutionUtil.TEST_ALL:
             default:
                 allRadioButton.setSelected(true);
                 break;
@@ -119,18 +119,18 @@ public class DrupalRunTestsSettingsEditor extends SettingsEditor<DrupalRunConfig
         params.setRepeatCount(((SpinnerNumberModel) myRepeatCount.getModel()).getNumber().intValue());
 
         if (allRadioButton.isSelected()) {
-            params.setTestGroup(DrupalRunConfiguration.TEST_ALL);
+            params.setTestGroup(DrupalRunTestsExecutionUtil.TEST_ALL);
         } else if(groupRadioButton.isSelected()) {
-            params.setTestGroup(DrupalRunConfiguration.TEST_GROUP);
+            params.setTestGroup(DrupalRunTestsExecutionUtil.TEST_GROUP);
             params.setTestGroupExtra(myTestGroup.getText());
         } else if(moduleRadioButton.isSelected()) {
-            params.setTestGroup(DrupalRunConfiguration.TEST_MODULE);
+            params.setTestGroup(DrupalRunTestsExecutionUtil.TEST_MODULE);
             params.setTestGroupExtra(myTestModule.getText());
         } else if(directoryRadioButton.isSelected()) {
-            params.setTestGroup(DrupalRunConfiguration.TEST_DIRECTORY);
+            params.setTestGroup(DrupalRunTestsExecutionUtil.TEST_DIRECTORY);
             params.setTestGroupExtra(myTestDirectory.getText());
         } else if(classRadioButton.isSelected()) {
-            params.setTestGroup(DrupalRunConfiguration.TEST_CLASS);
+            params.setTestGroup(DrupalRunTestsExecutionUtil.TEST_CLASS);
             params.setTestGroupExtra(myTestClass.getText());
         }
     }
