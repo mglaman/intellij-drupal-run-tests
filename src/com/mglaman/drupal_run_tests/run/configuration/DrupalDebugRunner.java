@@ -37,14 +37,12 @@ import java.util.Map;
 /**
  * @author mglaman
  */
-public class DrupalRunDebugRunner extends PhpDebugRunner<DrupalRunConfiguration> {
-    public DrupalRunDebugRunner() {
-        super(DrupalRunConfiguration.class);
-    }
+public class DrupalDebugRunner extends PhpDebugRunner<DrupalRunConfiguration> {
+    public DrupalDebugRunner() { super(DrupalRunConfiguration.class); }
 
     @NotNull
     public String getRunnerId() {
-        return "DrupalRunDebugRunner";
+        return "DrupalDebugRunner";
     }
 
     @Override
@@ -61,9 +59,6 @@ public class DrupalRunDebugRunner extends PhpDebugRunner<DrupalRunConfiguration>
         final PhpDebugExtension debugExtension = PhpProjectConfigurationFacade.getInstance(runConfiguration.getProject()).getInterpreterDebugExtension();
         if(debugExtension == null) {
             throw new ExecutionException("Unknown debugger.");
-        } else if(debugExtension == PhpdbgExtension.INSTANCE) {
-            throw new ExecutionException("DBG is not supported yet.");
-            // return doExecutePhpdbg(runConfiguration, project, env, breakAtFirstLine);
         } else {
             final PhpDebugServer debugServer = debugExtension.startDebugServer(project);
             final PhpDebugConnectionManager connectionsManager = debugExtension.createDebugConnectionManager();
@@ -94,11 +89,4 @@ public class DrupalRunDebugRunner extends PhpDebugRunner<DrupalRunConfiguration>
 
     }
 
-    @Override
-    public boolean canRun(@NotNull String executorId, @NotNull RunProfile profile) {
-        boolean executor = DefaultDebugExecutor.EXECUTOR_ID.equals(executorId);
-        boolean classInstance = DrupalRunConfiguration.class.isInstance(profile);
-
-        return super.canRun(executorId, profile);
-    }
 }
