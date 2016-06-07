@@ -1,11 +1,16 @@
 package com.mglaman.drupal_run_tests.run.configuration;
 
+import com.intellij.execution.DefaultExecutionResult;
 import com.intellij.execution.ExecutionException;
-import com.intellij.execution.configurations.ConfigurationFactory;
-import com.intellij.execution.configurations.RunConfiguration;
-import com.intellij.execution.configurations.RuntimeConfigurationError;
-import com.intellij.execution.configurations.RuntimeConfigurationException;
+import com.intellij.execution.ExecutionResult;
+import com.intellij.execution.Executor;
+import com.intellij.execution.configurations.*;
 import com.intellij.execution.filters.Filter;
+import com.intellij.execution.process.ProcessHandler;
+import com.intellij.execution.process.ProcessTerminatedListener;
+import com.intellij.execution.runners.ExecutionEnvironment;
+import com.intellij.execution.runners.ProgramRunner;
+import com.intellij.execution.ui.ConsoleView;
 import com.intellij.openapi.options.SettingsEditor;
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.util.text.StringUtil;
@@ -13,6 +18,7 @@ import com.intellij.util.xmlb.annotations.Attribute;
 import com.intellij.util.xmlb.annotations.Property;
 import com.jetbrains.php.config.PhpProjectConfigurationFacade;
 import com.jetbrains.php.config.commandLine.PhpCommandSettings;
+import com.jetbrains.php.config.commandLine.PhpCommandSettingsBuilder;
 import com.jetbrains.php.config.interpreters.PhpInterpreter;
 import com.jetbrains.php.drupal.DrupalVersion;
 import com.jetbrains.php.drupal.settings.DrupalConfigurable;
@@ -24,15 +30,17 @@ import com.jetbrains.php.util.pathmapper.PhpPathMapper;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-import java.util.Map;
-
 /**
  * @author mglaman
  */
-public class DrupalRunConfiguration extends PhpCommandLineRunConfiguration<DrupalRunConfiguration.Settings> {
+public class DrupalRunConfiguration extends PhpRefactoringListenerRunConfiguration<DrupalRunConfiguration.Settings> implements PhpRunConfigurationSettings {
+    private String workingDir = null;
 
     protected DrupalRunConfiguration(@NotNull Project project, @NotNull ConfigurationFactory factory, String name) {
         super(project, factory, name);
+
+        DrupalDataService drupalDataService = DrupalDataService.getInstance(getProject());
+        setWorkingDirectory(drupalDataService.getDrupalPath());
     }
 
     @NotNull
@@ -62,17 +70,27 @@ public class DrupalRunConfiguration extends PhpCommandLineRunConfiguration<Drupa
         return new DrupalRunTestsSettingsEditor(this.getProject());
     }
 
+    @Nullable
+    @Override
+    public String getWorkingDirectory() {
+        return this.workingDir;
+    }
+
+    @Override
+    public void setWorkingDirectory(@NotNull String s) {
+        this.workingDir = s;
+    }
+
     @Override
     public void checkConfiguration() throws RuntimeConfigurationException {
         DrupalDataService drupalDataService = DrupalDataService.getInstance(getProject());
-        String drupalRoot = drupalDataService.getDrupalPath();
+        String drupalRoot = getWorkingDirectory();
 
         if (drupalDataService.getVersion() == DrupalVersion.SIX) {
             throw new RuntimeConfigurationException("Drupal 6 is not supported, sorry.");
         }
 
         if (PhpRunUtil.findDirectory(drupalRoot) == null) {
-            // @todo Can we link to a shortcut to configure Drupal?s
             throw new RuntimeConfigurationError("Invalid Drupal directory configured for this project.", createDrupalFix(getProject()));
         }
 
@@ -91,7 +109,49 @@ public class DrupalRunConfiguration extends PhpCommandLineRunConfiguration<Drupa
         };
     }
 
-    public void fillCommandSettings(@NotNull Map<String, String> env, @NotNull PhpCommandSettings command) throws ExecutionException {
+    public RunProfileState getState(@NotNull Executor executor, @NotNull final ExecutionEnvironment env) throws ExecutionException {
+        try {
+            this.checkConfiguration();
+        } catch (RuntimeConfigurationWarning var7) {
+        } catch (RuntimeConfigurationException var8) {
+            throw new ExecutionException(var8.getMessage());
+        }
+
+        final Project project = this.getProject();
+        PhpInterpreter interpreter = PhpProjectConfigurationFacade.getInstance(project).getInterpreter();
+        if (interpreter == null) {
+            throw new ExecutionException(PhpCommandSettingsBuilder.INTERPRETER_NOT_FOUND_ERROR);
+        } else {
+            final PhpCommandSettings command = PhpCommandSettingsBuilder.create(project, interpreter, false);
+            return new CommandLineState(env) {
+                @NotNull
+                protected ProcessHandler startProcess() throws ExecutionException {
+                    // Build the command.
+                    DrupalRunConfiguration.this.buildCommand(command);
+                    ProcessHandler processHandler = DrupalRunConfiguration.this.createProcessHandler(project, command);
+                    PhpRunUtil.attachProcessOutputDebugDumper(processHandler);
+                    ProcessTerminatedListener.attach(processHandler, project);
+                    return processHandler;
+                }
+
+                @NotNull
+                @Override
+                public ExecutionResult execute(@NotNull Executor executor, @NotNull ProgramRunner runner) throws ExecutionException {
+                    final ProcessHandler processHandler = startProcess();
+                    final ConsoleView console = createConsole(executor);
+                    if (console != null) {
+                        console.attachToProcess(processHandler);
+                    }
+                    this.addConsoleFilters(DrupalRunConfiguration.this.getConsoleMessageFilters(project, command.getPathProcessor().createPathMapper(project)));
+
+                    return new DefaultExecutionResult(console, processHandler, createActions(console, processHandler, executor));
+                }
+            };
+        }
+    }
+
+
+    public void buildCommand(@NotNull PhpCommandSettings command) throws ExecutionException {
         Project project = getProject();
         DrupalRunConfiguration.Settings settings = this.getSettings();
         DrupalDataService drupalDataService = DrupalDataService.getInstance(project);
@@ -149,13 +209,13 @@ public class DrupalRunConfiguration extends PhpCommandLineRunConfiguration<Drupa
         DrupalRunTestsExecutionUtil.setTestGroup(command, settings.getTestGroup(), settings.getTestGroupExtra());
 
         command.importCommandLineSettings(settings.getCommandLineSettings(), drupalRoot);
-        command.addEnvs(env);
 
     }
 
-    @Override
     protected Filter[] getConsoleMessageFilters(@NotNull Project project, @NotNull PhpPathMapper pathMapper) {
-        return PhpExecutionUtil.getConsoleMessageFilters(project, pathMapper);
+        Filter[] filters = PhpExecutionUtil.getConsoleMessageFilters(project, pathMapper);
+        // @todo investigate our own filter.
+        return filters;
     }
 
     public static class Settings implements PhpRunConfigurationSettings {
@@ -164,7 +224,7 @@ public class DrupalRunConfiguration extends PhpCommandLineRunConfiguration<Drupa
         private boolean myUseSqlite = false;
         private String mySqliteDb = "/tmp/tmp.sqlite";
         private boolean myVerboseOutput = false;
-        private boolean myColorOutput = false;
+        private boolean myColorOutput = true;
         private int myTestGroup = DrupalRunTestsExecutionUtil.TEST_ALL;
         private String myTestGroupExtra = null;
         private int myTestConcurrency = 1;
@@ -194,60 +254,94 @@ public class DrupalRunConfiguration extends PhpCommandLineRunConfiguration<Drupa
         }
 
         @Attribute("use_sqlite")
-        public boolean isUsingSqlite() { return this.myUseSqlite; }
+        public boolean isUsingSqlite() {
+            return this.myUseSqlite;
+        }
 
-        public void setUseSqlite(boolean use) { this.myUseSqlite = use; }
+        public void setUseSqlite(boolean use) {
+            this.myUseSqlite = use;
+        }
 
         @Attribute("sqlite_db")
-        public String getSqliteDb() { return this.mySqliteDb; }
+        public String getSqliteDb() {
+            return this.mySqliteDb;
+        }
 
-        public void setSqliteDb(String db) { this.mySqliteDb = db; }
+        public void setSqliteDb(String db) {
+            this.mySqliteDb = db;
+        }
 
         @Attribute("verbose")
-        public boolean hasVerboseOutput() { return this.myVerboseOutput; }
+        public boolean hasVerboseOutput() {
+            return this.myVerboseOutput;
+        }
 
         public void setVerboseOutput(boolean verbose) {
             this.myVerboseOutput = verbose;
         }
 
         @Attribute("color")
-        public boolean hasColorOutput() { return this.myColorOutput; }
+        public boolean hasColorOutput() {
+            return this.myColorOutput;
+        }
 
         public void setColorOutput(boolean color) {
             this.myColorOutput = color;
         }
 
         @Attribute("test_group")
-        public int getTestGroup() { return this.myTestGroup; }
+        public int getTestGroup() {
+            return this.myTestGroup;
+        }
 
-        public void setTestGroup(int group) { this.myTestGroup = group; }
+        public void setTestGroup(int group) {
+            this.myTestGroup = group;
+        }
 
         @Attribute("test_group_extra")
-        public String getTestGroupExtra() { return this.myTestGroupExtra; }
+        public String getTestGroupExtra() {
+            return this.myTestGroupExtra;
+        }
 
-        public void setTestGroupExtra(String groupExtra) { this.myTestGroupExtra = groupExtra; }
+        public void setTestGroupExtra(String groupExtra) {
+            this.myTestGroupExtra = groupExtra;
+        }
 
         @Attribute("concurrency")
-        public int getTestConcurrency() { return this.myTestConcurrency; }
+        public int getTestConcurrency() {
+            return this.myTestConcurrency;
+        }
 
-        public void setTestConcurrency(int concurrency) { this.myTestConcurrency = concurrency; }
+        public void setTestConcurrency(int concurrency) {
+            this.myTestConcurrency = concurrency;
+        }
 
         @Attribute("die_on_fail")
-        public boolean hasDieOnFail() { return this.myDieOnFail; }
+        public boolean hasDieOnFail() {
+            return this.myDieOnFail;
+        }
 
         public void setDieOnFail(boolean dieOnFail) {
             this.myDieOnFail = dieOnFail;
         }
 
         @Attribute("repeat")
-        public boolean hasRepeat() { return this.myUseRepeat; }
+        public boolean hasRepeat() {
+            return this.myUseRepeat;
+        }
 
-        public void setHasRepeat(boolean repeat) { this.myUseRepeat = repeat; }
+        public void setHasRepeat(boolean repeat) {
+            this.myUseRepeat = repeat;
+        }
 
         @Attribute("repeat_count")
-        public int getRepeatCount() { return this.myRepeatCount; }
+        public int getRepeatCount() {
+            return this.myRepeatCount;
+        }
 
-        public void setRepeatCount(int count) { this.myRepeatCount = count; }
+        public void setRepeatCount(int count) {
+            this.myRepeatCount = count;
+        }
 
         @Property(
                 surroundWithTag = false
