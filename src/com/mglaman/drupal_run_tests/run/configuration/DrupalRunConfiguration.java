@@ -23,7 +23,13 @@ import com.jetbrains.php.config.interpreters.PhpInterpreter;
 import com.jetbrains.php.drupal.DrupalVersion;
 import com.jetbrains.php.drupal.settings.DrupalConfigurable;
 import com.jetbrains.php.drupal.settings.DrupalDataService;
-import com.jetbrains.php.run.*;
+import com.jetbrains.php.run.PhpCommandLineSettings;
+import com.jetbrains.php.run.PhpRefactoringListenerRunConfiguration;
+import com.jetbrains.php.run.PhpRunConfigurationSettings;
+import com.jetbrains.php.run.PhpRunUtil;
+import com.jetbrains.php.run.filters.PhpErrorMessageFilter;
+import com.jetbrains.php.run.filters.PhpUnitFilter;
+import com.jetbrains.php.run.filters.XdebugCallStackFilter;
 import com.jetbrains.php.ui.PhpUiUtil;
 import com.jetbrains.php.util.PhpConfigurationUtil;
 import com.jetbrains.php.util.pathmapper.PhpPathMapper;
@@ -144,8 +150,11 @@ public class DrupalRunConfiguration extends PhpRefactoringListenerRunConfigurati
                     final ConsoleView console = createConsole(executor);
                     if (console != null) {
                         console.attachToProcess(processHandler);
+                        Filter[] filters = DrupalRunConfiguration.this.getConsoleMessageFilters(project, command.getPathProcessor().createPathMapper(project));
+                        for (Filter filter : filters) {
+                            console.addMessageFilter(filter);
+                        }
                     }
-                    this.addConsoleFilters(DrupalRunConfiguration.this.getConsoleMessageFilters(project, command.getPathProcessor().createPathMapper(project)));
 
                     return new DefaultExecutionResult(console, processHandler, createActions(console, processHandler, executor));
                 }
@@ -217,9 +226,12 @@ public class DrupalRunConfiguration extends PhpRefactoringListenerRunConfigurati
     }
 
     protected Filter[] getConsoleMessageFilters(@NotNull Project project, @NotNull PhpPathMapper pathMapper) {
-        Filter[] filters = PhpExecutionUtil.getConsoleMessageFilters(project, pathMapper);
-        // @todo investigate our own filter.
-        return filters;
+        return new Filter[]{
+                new PhpErrorMessageFilter(project, pathMapper),
+                new PhpUnitFilter(project, pathMapper),
+                new XdebugCallStackFilter(project, pathMapper),
+                new DrupalRunTestMessageFilter(project, pathMapper)
+        };
     }
 
     public static class Settings implements PhpRunConfigurationSettings {
