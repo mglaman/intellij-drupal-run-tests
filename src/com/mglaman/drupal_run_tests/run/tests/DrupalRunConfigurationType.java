@@ -1,14 +1,14 @@
-package com.mglaman.drupal_run_tests.run.configuration;
+package com.mglaman.drupal_run_tests.run.tests;
 
-import com.intellij.execution.configurations.ConfigurationType;
 import com.intellij.execution.configurations.ConfigurationFactory;
-import javax.swing.Icon;
-
+import com.intellij.execution.configurations.ConfigurationType;
 import com.intellij.execution.configurations.RunConfiguration;
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.util.IconLoader;
 import com.jetbrains.php.run.PhpRunConfigurationFactoryBase;
 import org.jetbrains.annotations.NotNull;
+
+import javax.swing.*;
 
 /**
  * @author mglaman

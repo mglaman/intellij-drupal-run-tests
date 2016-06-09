@@ -52,8 +52,8 @@ single runner.
   <depends>com.intellij.modules.platform</depends>
 
   <extensions defaultExtensionNs="com.intellij">
-    <configurationType implementation="com.mglaman.drupal_run_tests.run.configuration.DrupalRunConfigurationType"/>
-    <programRunner implementation="com.mglaman.drupal_run_tests.run.configuration.DrupalDebugRunner"/>
+    <configurationType implementation="com.mglaman.drupal_run_tests.run.tests.DrupalRunConfigurationType"/>
+    <programRunner implementation="com.mglaman.drupal_run_tests.run.tests.DrupalDebugRunner"/>
   </extensions>
 
   <actions>

@@ -2,7 +2,7 @@
  * Copyright (c) 2016.
  */
 
-package com.mglaman.drupal_run_tests.run.configuration;
+package com.mglaman.drupal_run_tests.run.tests;
 
 import com.intellij.openapi.diagnostic.Logger;
 import com.intellij.openapi.progress.ProcessCanceledException;
@@ -23,7 +23,7 @@ import java.util.regex.Pattern;
  * @author mglaman
  */
 public class DrupalRunTestMessageFilter extends PhpFilter {
-    private static final Logger LOG = Logger.getInstance("#com.mglaman.drupal_run_tests.run.configuration.DrupalRunTestMessageFilter");
+    private static final Logger LOG = Logger.getInstance("#com.mglaman.drupal_run_tests.run.tests.DrupalRunTestMessageFilter");
     private static final Pattern PASSES_MESSAGE_PATTERN;
     private final Project myProject;
 

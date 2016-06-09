@@ -2,12 +2,10 @@
  * Copyright (c) 2016.
  */
 
-package com.mglaman.drupal_run_tests.run.configuration;
+package com.mglaman.drupal_run_tests.run.tests;
 
 import com.intellij.execution.ExecutionException;
-import com.intellij.execution.configurations.RunProfile;
 import com.intellij.execution.configurations.RunProfileState;
-import com.intellij.execution.executors.DefaultDebugExecutor;
 import com.intellij.execution.process.ProcessHandler;
 import com.intellij.execution.process.ProcessTerminatedListener;
 import com.intellij.execution.runners.ExecutionEnvironment;
@@ -27,7 +25,6 @@ import com.jetbrains.php.debug.common.PhpDebugDriver;
 import com.jetbrains.php.debug.common.PhpDebugProcessFactory;
 import com.jetbrains.php.debug.connection.PhpDebugConnectionManager;
 import com.jetbrains.php.debug.connection.PhpDebugServer;
-import com.jetbrains.php.debug.phpdbg.PhpdbgExtension;
 import com.jetbrains.php.run.PhpDebugRunner;
 import com.jetbrains.php.run.script.PhpScriptDebugRunner;
 import org.jetbrains.annotations.NotNull;
