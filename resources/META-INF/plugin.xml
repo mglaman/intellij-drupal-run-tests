@@ -1,7 +1,7 @@
 <idea-plugin version="2">
   <id>com.mglaman.drupal_run_tests</id>
   <name>Drupal Test Runner</name>
-  <version>1.0-beta1</version>
+  <version>1.0-beta2</version>
   <vendor email="nmd.matt@gmail.com" url="https://glamanate.com">Matt Glaman</vendor>
 
   <description><![CDATA[
@@ -13,6 +13,13 @@ single runner.
     ]]></description>
 
   <change-notes><![CDATA[
+<p>1.0-beta2:</p>
+<ul>
+  <li>Support running specific types.</li>
+  <li>Adjust naming and positioning on configure form.</li>
+  <li>Link to failed test class files.</li>
+</ul>
+
 <p>1.0-beta1:</p>
 <ul>
   <li>Allow debugging like phpunit tests. (<a href="https://github.com/mglaman/intellij-drupal-run-tests/issues/14">#14</a>)</li>
