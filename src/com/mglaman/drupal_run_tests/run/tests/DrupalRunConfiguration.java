@@ -214,6 +214,12 @@ public class DrupalRunConfiguration extends PhpRefactoringListenerRunConfigurati
             command.addArgument(Integer.toString(settings.getRepeatCount()));
         }
 
+        String testTypes = settings.getTestTypes();
+        if (null != testTypes) {
+            command.addArgument("--types");
+            command.addArgument(testTypes);
+        }
+
         // @todo This saves each test result individually. Can we parse this.
 //        command.addArgument("--xml ");
 //        command.addArgument("/tmp/drupal-tests");
@@ -247,6 +253,7 @@ public class DrupalRunConfiguration extends PhpRefactoringListenerRunConfigurati
         private boolean myDieOnFail = false;
         private boolean myUseRepeat = false;
         private int myRepeatCount = 1;
+        private String myTestTypes = null;
         private PhpCommandLineSettings myCommandLineSettings = new PhpCommandLineSettings();
 
         @Attribute("simpletest_url")
@@ -357,6 +364,23 @@ public class DrupalRunConfiguration extends PhpRefactoringListenerRunConfigurati
 
         public void setRepeatCount(int count) {
             this.myRepeatCount = count;
+        }
+
+        @Attribute("test_types")
+        public String getTestTypes() {
+            return this.myTestTypes;
+        }
+
+        public String[] getTestTypesAsArray() {
+            return (null != this.myTestTypes) ? this.myTestTypes.split(",") : null;
+        }
+
+        public void setTestTypes(@Nullable String types) {
+            this.myTestTypes = types;
+        }
+
+        public void setTestTypesAsArray(String[] types) {
+            this.myTestTypes = StringUtil.join(types, ",");
         }
 
         @Property(

@@ -40,6 +40,12 @@ public class DrupalRunTestsSettingsEditor extends SettingsEditor<DrupalRunConfig
     private JCheckBox dieOnFailureCheckBox;
     private JCheckBox repeatCheckBox;
     private JSpinner myRepeatCount;
+    private JCheckBox simpletestCheckBox;
+    private JCheckBox functionalBrowserTestsCheckBox;
+    private JCheckBox javascriptBrowserTestsCheckBox;
+    private JCheckBox kernelTestsCheckBox;
+    private JPanel myTestTypePanel;
+    private JCheckBox unitTestsCheckBox;
 
     private final Project myProject;
 
@@ -103,6 +109,31 @@ public class DrupalRunTestsSettingsEditor extends SettingsEditor<DrupalRunConfig
                 allRadioButton.setSelected(true);
                 break;
         }
+
+        String[] testTypes = params.getTestTypesAsArray();
+        if (testTypes == null) {
+            simpletestCheckBox.setSelected(true);
+            unitTestsCheckBox.setSelected(true);
+            kernelTestsCheckBox.setSelected(true);
+            functionalBrowserTestsCheckBox.setSelected(true);
+            javascriptBrowserTestsCheckBox.setSelected(true);
+        } else {
+            for (String type : testTypes) {
+                if (type.equals("Simpletest")) {
+                    simpletestCheckBox.setSelected(true);
+                } else if (type.equals("PHPUnit-Unit")) {
+                    unitTestsCheckBox.setSelected(true);
+
+                } else if (type.equals("PHPUnit-Kernel")) {
+                    kernelTestsCheckBox.setSelected(true);
+                } else if (type.equals("PHPUnit-Functional")) {
+                    functionalBrowserTestsCheckBox.setSelected(true);
+                } else if (type.equals("PHPUnit-FunctionalJavascript")) {
+                    javascriptBrowserTestsCheckBox.setSelected(true);
+                }
+            }
+        }
+
     }
 
     protected void applyEditorTo(DrupalRunConfiguration configuration) throws ConfigurationException {
@@ -133,6 +164,36 @@ public class DrupalRunTestsSettingsEditor extends SettingsEditor<DrupalRunConfig
             params.setTestGroup(DrupalRunTestsExecutionUtil.TEST_CLASS);
             params.setTestGroupExtra(myTestClass.getText());
         }
+
+        if (simpletestCheckBox.isSelected() && unitTestsCheckBox.isSelected() && kernelTestsCheckBox.isSelected() && functionalBrowserTestsCheckBox.isSelected() && javascriptBrowserTestsCheckBox.isSelected()) {
+            params.setTestTypes(null);
+        } else {
+            String[] enabledTestTypes = new String[5];
+            // We need this counter, otherwise hardcoding integer counter leads to null entries when running command.
+            int i = 0;
+            if (simpletestCheckBox.isSelected()) {
+                enabledTestTypes[i] = "Simpletest";
+                i++;
+            }
+            if (unitTestsCheckBox.isSelected()) {
+                enabledTestTypes[i] = "PHPUnit-Unit";
+                i++;
+            }
+            if (kernelTestsCheckBox.isSelected()) {
+                enabledTestTypes[i] = "PHPUnit-Kernel";
+                i++;
+            }
+            if (functionalBrowserTestsCheckBox.isSelected()) {
+                enabledTestTypes[i] = "PHPUnit-Functional";
+                i++;
+            }
+            if (javascriptBrowserTestsCheckBox.isSelected()) {
+                enabledTestTypes[i] = "PHPUnit-FunctionalJavascript";
+            }
+
+            params.setTestTypesAsArray(enabledTestTypes);
+        }
+
     }
 
     public void stateChanged(ChangeEvent e) {
