@@ -7,7 +7,6 @@ package com.mglaman.drupal_run_tests.run.tests;
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.util.text.StringUtil;
 import com.jetbrains.php.config.commandLine.PhpCommandSettings;
-import com.jetbrains.php.drupal.DrupalVersion;
 import com.jetbrains.php.drupal.settings.DrupalDataService;
 import org.jetbrains.annotations.Nullable;
 
@@ -24,11 +23,11 @@ final class DrupalRunTestsExecutionUtil {
     final static int TEST_DIRECTORY = 3;
     final static int TEST_CLASS = 4;
 
-    static String getRunTestsPath(Project project, DrupalVersion version) throws DrupalVersionException {
+    static String getRunTestsPath(Project project) throws DrupalVersionException {
         DrupalDataService drupalDataService = DrupalDataService.getInstance(project);
         String drupalRoot = drupalDataService.getDrupalPath();
 
-        switch (version) {
+        switch (drupalDataService.getVersion()) {
             case EIGHT:
                 return drupalRoot + DrupalRunTestsExecutionUtil.D8_TESTS_PATH;
             case SEVEN:

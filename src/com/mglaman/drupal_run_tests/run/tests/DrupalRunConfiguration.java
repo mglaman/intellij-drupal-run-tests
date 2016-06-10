@@ -93,14 +93,18 @@ public class DrupalRunConfiguration extends PhpRefactoringListenerRunConfigurati
     @Override
     public void checkConfiguration() throws RuntimeConfigurationException {
         DrupalDataService drupalDataService = DrupalDataService.getInstance(getProject());
-        String drupalRoot = getWorkingDirectory();
 
         if (drupalDataService.getVersion() == DrupalVersion.SIX) {
             throw new RuntimeConfigurationException("Drupal 6 is not supported, sorry.");
         }
 
-        if (PhpRunUtil.findDirectory(drupalRoot) == null) {
-            throw new RuntimeConfigurationError("Invalid Drupal directory configured for this project.", createDrupalFix(getProject()));
+        try {
+            String scriptPath = DrupalRunTestsExecutionUtil.getRunTestsPath(getProject());
+            if (!PhpRunUtil.isValidFilePath(scriptPath)) {
+                throw new Exception("Invalid script path");
+            }
+        } catch (Exception dve) {
+            throw new RuntimeConfigurationError("Unable to locate test script. Is Drupal configured properly?", createDrupalFix(getProject()));
         }
 
         PhpRunUtil.checkPhpInterpreter(getProject());
@@ -171,7 +175,7 @@ public class DrupalRunConfiguration extends PhpRefactoringListenerRunConfigurati
 
         // Discover the proper path to the run-tests.sh script.
         try {
-            command.setScript(DrupalRunTestsExecutionUtil.getRunTestsPath(project, drupalDataService.getVersion()), true);
+            command.setScript(DrupalRunTestsExecutionUtil.getRunTestsPath(project), true);
         } catch (DrupalVersionException dve) {
             throw new ExecutionException(dve);
         }
