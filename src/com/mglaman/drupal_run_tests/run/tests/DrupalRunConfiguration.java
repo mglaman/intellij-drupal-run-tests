@@ -101,7 +101,10 @@ public class DrupalRunConfiguration extends PhpRefactoringListenerRunConfigurati
         try {
             String scriptPath = DrupalRunTestsExecutionUtil.getRunTestsPath(getProject());
             if (!PhpRunUtil.isValidFilePath(scriptPath)) {
-                throw new Exception("Invalid script path");
+                throw new RuntimeConfigurationError("Unable to locate test script. Is Drupal configured properly?", createDrupalFix(getProject()));
+            }
+            if (!DrupalRunTestsExecutionUtil.isVendorInstalled(getProject())) {
+                throw new RuntimeConfigurationError("You need to run `composer install` in your Drupal root directory.");
             }
         } catch (Exception dve) {
             throw new RuntimeConfigurationError("Unable to locate test script. Is Drupal configured properly?", createDrupalFix(getProject()));

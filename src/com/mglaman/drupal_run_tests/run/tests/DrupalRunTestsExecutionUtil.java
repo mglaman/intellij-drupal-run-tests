@@ -8,6 +8,7 @@ import com.intellij.openapi.project.Project;
 import com.intellij.openapi.util.text.StringUtil;
 import com.jetbrains.php.config.commandLine.PhpCommandSettings;
 import com.jetbrains.php.drupal.settings.DrupalDataService;
+import com.jetbrains.php.run.PhpRunUtil;
 import org.jetbrains.annotations.Nullable;
 
 /**
@@ -22,6 +23,13 @@ final class DrupalRunTestsExecutionUtil {
     final static int TEST_MODULE = 2;
     final static int TEST_DIRECTORY = 3;
     final static int TEST_CLASS = 4;
+
+    static boolean isVendorInstalled(Project project) {
+        DrupalDataService drupalDataService = DrupalDataService.getInstance(project);
+        String drupalRoot = drupalDataService.getDrupalPath();
+
+        return PhpRunUtil.isValidDirectoryPath(drupalRoot + "/vendor");
+    }
 
     static String getRunTestsPath(Project project) throws DrupalVersionException {
         DrupalDataService drupalDataService = DrupalDataService.getInstance(project);
