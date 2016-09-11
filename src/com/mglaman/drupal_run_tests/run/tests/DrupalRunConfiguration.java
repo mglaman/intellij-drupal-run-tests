@@ -49,7 +49,9 @@ public class DrupalRunConfiguration extends PhpRefactoringListenerRunConfigurati
         super(project, factory, name);
 
         DrupalDataService drupalDataService = DrupalDataService.getInstance(getProject());
-        setWorkingDirectory(drupalDataService.getDrupalPath());
+        if (drupalDataService.getDrupalPath() != null) {
+            setWorkingDirectory(drupalDataService.getDrupalPath());
+        }
     }
 
     @NotNull
