@@ -146,7 +146,7 @@ public class DrupalRunConfiguration extends PhpRefactoringListenerRunConfigurati
                 protected ProcessHandler startProcess() throws ExecutionException {
                     // Build the command.
                     DrupalRunConfiguration.this.buildCommand(Collections.<String, String>emptyMap(), command);
-                    ProcessHandler processHandler = DrupalRunConfiguration.this.createProcessHandler(project, command);
+                    ProcessHandler processHandler = DrupalRunConfiguration.this.createProcessHandler(project, null, command);
                     PhpRunUtil.attachProcessOutputDebugDumper(processHandler);
                     ProcessTerminatedListener.attach(processHandler, project);
                     return processHandler;
