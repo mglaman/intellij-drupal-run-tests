@@ -1,7 +1,7 @@
 <idea-plugin version="2">
   <id>com.mglaman.drupal_run_tests</id>
   <name>Drupal Test Runner</name>
-  <version>1.0-beta2</version>
+  <version>1.0-rc1</version>
   <vendor email="nmd.matt@gmail.com" url="https://glamanate.com">Matt Glaman</vendor>
 
   <description><![CDATA[
@@ -13,6 +13,16 @@ single runner.
     ]]></description>
 
   <change-notes><![CDATA[
+<p>1.0-rc1:</p>
+<ul>
+  <li>Fix deprecation notice on createProcessHandler</li>
+  <li>Fix NotNull error when Drupal integration is not yet configured <a href="/node/17">#17</a></li>
+  <li>Unselected test types in the UI output as 'null' in command parameter <a href="/node/21">#21</a></li>
+  <li>Check if `vendor` created for check configuration. (<a href="/node/16">#16</a>)</li>
+  <li>Invalid Drupal Directory configured for this project <a href="/node/15">#15</a></li>
+  <li>Add screenshots for wiki, update README screenshot.</li>
+</ul>
+
 <p>1.0-beta2:</p>
 <ul>
   <li>Support running specific types.</li>
