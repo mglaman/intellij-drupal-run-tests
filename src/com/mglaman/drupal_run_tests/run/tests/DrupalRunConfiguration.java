@@ -104,16 +104,16 @@ public class DrupalRunConfiguration extends PhpRefactoringListenerRunConfigurati
                 throw new RuntimeConfigurationError("Unable to locate test script. Is Drupal configured properly?", createDrupalFix(getProject()));
             }
             if (!DrupalRunTestsExecutionUtil.isVendorInstalled(getProject())) {
-                throw new RuntimeConfigurationError("You need to run `composer install` in your Drupal root directory.");
+                throw new RuntimeConfigurationWarning("Cannot detect `vendor` directory inside of Drupal root.");
             }
-        } catch (Exception dve) {
+        } catch (RuntimeConfigurationError dve) {
             throw new RuntimeConfigurationError("Unable to locate test script. Is Drupal configured properly?", createDrupalFix(getProject()));
+        } catch (DrupalVersionException e) {
+            throw new RuntimeConfigurationError("Unsupported Drupal version found.");
         }
 
-        PhpRunUtil.checkPhpInterpreter(getProject());
-
         DrupalRunConfiguration.Settings settings = getSettings();
-        PhpRunUtil.checkCommandLineSettings(settings.getCommandLineSettings());
+        PhpRunUtil.checkCommandLineSettings(getProject(), settings.getCommandLineSettings());
     }
 
     @NotNull
@@ -384,10 +384,6 @@ public class DrupalRunConfiguration extends PhpRefactoringListenerRunConfigurati
 
         public void setTestTypes(@Nullable String types) {
             this.myTestTypes = types;
-        }
-
-        public void setTestTypesAsArray(String[] types) {
-            this.myTestTypes = StringUtil.join(types, ",");
         }
 
         @Property(

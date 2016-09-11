@@ -5,6 +5,7 @@ import com.intellij.openapi.options.ConfigurationException;
 import com.intellij.openapi.options.SettingsEditor;
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.ui.TextFieldWithBrowseButton;
+import com.intellij.openapi.util.text.StringUtil;
 import org.jetbrains.annotations.NotNull;
 
 import javax.swing.*;
@@ -12,6 +13,7 @@ import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.util.ArrayList;
 
 /**
  * @author mglaman
@@ -168,30 +170,24 @@ public class DrupalRunTestsSettingsEditor extends SettingsEditor<DrupalRunConfig
         if (simpletestCheckBox.isSelected() && unitTestsCheckBox.isSelected() && kernelTestsCheckBox.isSelected() && functionalBrowserTestsCheckBox.isSelected() && javascriptBrowserTestsCheckBox.isSelected()) {
             params.setTestTypes(null);
         } else {
-            String[] enabledTestTypes = new String[5];
-            // We need this counter, otherwise hardcoding integer counter leads to null entries when running command.
-            int i = 0;
+            ArrayList<String> enabledTypesList = new ArrayList<String>();
             if (simpletestCheckBox.isSelected()) {
-                enabledTestTypes[i] = "Simpletest";
-                i++;
+                enabledTypesList.add("Simpletest");
             }
             if (unitTestsCheckBox.isSelected()) {
-                enabledTestTypes[i] = "PHPUnit-Unit";
-                i++;
+                enabledTypesList.add("PHPUnit-Unit");
             }
             if (kernelTestsCheckBox.isSelected()) {
-                enabledTestTypes[i] = "PHPUnit-Kernel";
-                i++;
+                enabledTypesList.add("PHPUnit-Kernel");
             }
             if (functionalBrowserTestsCheckBox.isSelected()) {
-                enabledTestTypes[i] = "PHPUnit-Functional";
-                i++;
+                enabledTypesList.add("PHPUnit-Functional");
             }
             if (javascriptBrowserTestsCheckBox.isSelected()) {
-                enabledTestTypes[i] = "PHPUnit-FunctionalJavascript";
+                enabledTypesList.add("PHPUnit-FunctionalJavascript");
             }
 
-            params.setTestTypesAsArray(enabledTestTypes);
+            params.setTestTypes(StringUtil.join(enabledTypesList, ","));
         }
 
     }

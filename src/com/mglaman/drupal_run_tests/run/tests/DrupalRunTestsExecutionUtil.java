@@ -28,7 +28,8 @@ final class DrupalRunTestsExecutionUtil {
         DrupalDataService drupalDataService = DrupalDataService.getInstance(project);
         String drupalRoot = drupalDataService.getDrupalPath();
 
-        return PhpRunUtil.isValidDirectoryPath(drupalRoot + "/vendor");
+        return PhpRunUtil.isValidDirectoryPath(drupalRoot + "/vendor") ||
+                PhpRunUtil.isValidFileOrDirectoryPath(project.getBasePath() + "/vendor");
     }
 
     static String getRunTestsPath(Project project) throws DrupalVersionException {
