@@ -65,7 +65,7 @@ public class DrupalDebugRunner extends PhpDebugRunner<DrupalRunConfiguration> {
                 final PhpCommandSettings e = PhpCommandSettingsBuilder.create(project, interpreter, true);
                 Map<String, String> commandLineEnv = debugExtension.getDebugEnv(project, breakAtFirstLine, sessionId);
                 runConfiguration.buildCommand(commandLineEnv, e);
-                final ProcessHandler processHandler = runConfiguration.createProcessHandler(project, e);
+                final ProcessHandler processHandler = runConfiguration.createProcessHandler(project, "drupalRunner", e);
                 ProcessTerminatedListener.attach(processHandler, project);
                 XDebugSession debugSession = XDebuggerManager.getInstance(project).startSession(env, new XDebugProcessStarter() {
                     @NotNull

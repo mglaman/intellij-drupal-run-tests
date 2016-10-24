@@ -22,26 +22,25 @@ import java.util.regex.Pattern;
 /**
  * @author mglaman
  */
-public class DrupalRunTestMessageFilter extends PhpFilter {
+class DrupalRunTestMessageFilter extends PhpFilter {
     private static final Logger LOG = Logger.getInstance("#com.mglaman.drupal_run_tests.run.tests.DrupalRunTestMessageFilter");
     private static final Pattern PASSES_MESSAGE_PATTERN;
     private final Project myProject;
 
-    public DrupalRunTestMessageFilter(@NotNull Project project, @NotNull PhpPathMapper pathMapper) {
+    DrupalRunTestMessageFilter(@NotNull Project project, @NotNull PhpPathMapper pathMapper) {
         super(project, pathMapper);
         myProject = project;
     }
 
-    protected Project getProject() {
+    private Project getProject() {
         return this.myProject;
     }
 
     @Nullable
     @Override
     public MyResult applyFilter(@NotNull String s) {
-        Pattern pattern = PASSES_MESSAGE_PATTERN;
         try {
-            Matcher e = pattern.matcher(StringUtil.newBombedCharSequence(s, 1000L));
+            Matcher e = PASSES_MESSAGE_PATTERN.matcher(StringUtil.newBombedCharSequence(s, 1000L));
             if (e.find()) {
                 String className = e.group(1);
                 if (className == null) {

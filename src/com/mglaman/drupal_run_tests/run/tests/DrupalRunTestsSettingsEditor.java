@@ -67,7 +67,7 @@ public class DrupalRunTestsSettingsEditor extends SettingsEditor<DrupalRunConfig
         repeatCheckBox.addActionListener(updateStateActionListener);
     }
 
-    protected void resetEditorFrom(DrupalRunConfiguration configuration) {
+    protected void resetEditorFrom(@NotNull DrupalRunConfiguration configuration) {
         DrupalRunConfiguration.Settings params = configuration.getSettings();
         mySimpletestUrl.setText(params.getSimpletestUrl());
         mySimpletestDb.setText(params.getSimpletestDb());
@@ -138,7 +138,7 @@ public class DrupalRunTestsSettingsEditor extends SettingsEditor<DrupalRunConfig
 
     }
 
-    protected void applyEditorTo(DrupalRunConfiguration configuration) throws ConfigurationException {
+    protected void applyEditorTo(@NotNull DrupalRunConfiguration configuration) throws ConfigurationException {
         DrupalRunConfiguration.Settings params = configuration.getSettings();
         params.setSimpletestUrl(mySimpletestUrl.getText());
         params.setSimpletestDb(mySimpletestDb.getText());

@@ -21,7 +21,7 @@ public class DrupalRunConfigurationType implements ConfigurationType {
         @Override
         @NotNull
         public RunConfiguration createTemplateConfiguration(@NotNull Project project) {
-            return new DrupalRunConfiguration(project, this, "");
+            return new DrupalRunConfiguration(project, this);
         }
     };
 

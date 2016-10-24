@@ -42,11 +42,11 @@ import java.util.Map;
 /**
  * @author mglaman
  */
-public class DrupalRunConfiguration extends PhpRefactoringListenerRunConfiguration<DrupalRunConfiguration.Settings> implements PhpRunConfigurationSettings {
+class DrupalRunConfiguration extends PhpRefactoringListenerRunConfiguration<DrupalRunConfiguration.Settings> implements PhpRunConfigurationSettings {
     private String workingDir = null;
 
-    protected DrupalRunConfiguration(@NotNull Project project, @NotNull ConfigurationFactory factory, String name) {
-        super(project, factory, name);
+    DrupalRunConfiguration(@NotNull Project project, @NotNull ConfigurationFactory factory) {
+        super(project, factory, "");
 
         DrupalDataService drupalDataService = DrupalDataService.getInstance(getProject());
         if (drupalDataService.getDrupalPath() != null) {
@@ -186,7 +186,7 @@ public class DrupalRunConfiguration extends PhpRefactoringListenerRunConfigurati
         }
 
         PhpInterpreter e = PhpProjectConfigurationFacade.getInstance(project).getInterpreter();
-        if (e == null) {
+        if (e == null || e.getPathToPhpExecutable() == null) {
             throw new ExecutionException("Unable to find PHP executable");
         }
         command.addArgument("--php");
@@ -240,7 +240,7 @@ public class DrupalRunConfiguration extends PhpRefactoringListenerRunConfigurati
 
     }
 
-    protected Filter[] getConsoleMessageFilters(@NotNull Project project, @NotNull PhpPathMapper pathMapper) {
+    private Filter[] getConsoleMessageFilters(@NotNull Project project, @NotNull PhpPathMapper pathMapper) {
         return new Filter[]{
                 new PhpErrorMessageFilter(project, pathMapper),
                 new PhpUnitFilter(project, pathMapper),
