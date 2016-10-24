@@ -1,7 +1,7 @@
 <idea-plugin version="2">
   <id>com.mglaman.drupal_run_tests</id>
   <name>Drupal Test Runner</name>
-  <version>1.0-rc1</version>
+  <version>1.0-rc2</version>
   <vendor email="nmd.matt@gmail.com" url="https://glamanate.com">Matt Glaman</vendor>
 
   <description><![CDATA[
@@ -13,6 +13,10 @@ single runner.
     ]]></description>
 
   <change-notes><![CDATA[
+<p>1.0-rc2</p>
+<ul>
+  <li>Update deprecated items.</li>
+</ul>
 <p>1.0-rc1:</p>
 <ul>
   <li>Fix deprecation notice on createProcessHandler</li>
