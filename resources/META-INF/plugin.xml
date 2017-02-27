@@ -13,6 +13,11 @@ single runner.
     ]]></description>
 
   <change-notes><![CDATA[
+<p>1.0-rc3</p>
+<ul>
+  <li>Only pass `--types` and other Drupal 8 flags if the project is for Drupal 8.</li>
+  <li>ix java.lang.NoSuchMethodError on createProcessHandler</li>
+</ul>
 <p>1.0-rc2</p>
 <ul>
   <li>Update deprecated items.</li>
