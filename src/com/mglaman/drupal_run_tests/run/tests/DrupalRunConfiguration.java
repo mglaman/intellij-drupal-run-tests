@@ -177,6 +177,7 @@ class DrupalRunConfiguration extends PhpRefactoringListenerRunConfiguration<Drup
         DrupalRunConfiguration.Settings settings = this.getSettings();
         DrupalDataService drupalDataService = DrupalDataService.getInstance(project);
         String drupalRoot = drupalDataService.getDrupalPath();
+        boolean isDrupal8 = (drupalDataService.getVersion() == DrupalVersion.EIGHT);
 
         // Discover the proper path to the run-tests.sh script.
         try {
@@ -195,12 +196,12 @@ class DrupalRunConfiguration extends PhpRefactoringListenerRunConfiguration<Drup
         command.addArgument("--url");
         command.addArgument(settings.getSimpletestUrl());
 
-        if (settings.getSimpletestDb() != null) {
+        if (settings.getSimpletestDb() != null && isDrupal8) {
             command.addArgument("--dburl");
             command.addArgument(settings.getSimpletestDb());
         }
 
-        if (settings.isUsingSqlite()) {
+        if (settings.isUsingSqlite() && isDrupal8) {
             command.addArgument("--sqlite");
             command.addArgument(settings.getSqliteDb());
         }
@@ -215,29 +216,28 @@ class DrupalRunConfiguration extends PhpRefactoringListenerRunConfiguration<Drup
         if (settings.hasVerboseOutput()) {
             command.addArgument("--verbose");
         }
-        if (settings.hasDieOnFail()) {
+        if (settings.hasDieOnFail() && isDrupal8) {
             command.addArgument("--die-on-fail");
         }
-        if (settings.hasRepeat()) {
+        if (settings.hasRepeat() && isDrupal8) {
             command.addArgument("--repeat");
             command.addArgument(Integer.toString(settings.getRepeatCount()));
         }
 
         String testTypes = settings.getTestTypes();
-        if (null != testTypes) {
+        if (null != testTypes && drupalDataService.getVersion() == DrupalVersion.EIGHT) {
             command.addArgument("--types");
             command.addArgument(testTypes);
         }
 
         // @todo This saves each test result individually. Can we parse this.
-//        command.addArgument("--xml ");
-//        command.addArgument("/tmp/drupal-tests");
+        // command.addArgument("--xml ");
+        // command.addArgument("/tmp/drupal-tests");
 
         DrupalRunTestsExecutionUtil.setTestGroup(command, settings.getTestGroup(), settings.getTestGroupExtra());
 
         command.importCommandLineSettings(settings.getCommandLineSettings(), drupalRoot);
         command.addEnvs(env);
-
     }
 
     private Filter[] getConsoleMessageFilters(@NotNull Project project, @NotNull PhpPathMapper pathMapper) {
