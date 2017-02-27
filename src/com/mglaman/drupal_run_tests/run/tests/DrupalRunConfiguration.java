@@ -140,13 +140,13 @@ class DrupalRunConfiguration extends PhpRefactoringListenerRunConfiguration<Drup
         if (interpreter == null) {
             throw new ExecutionException(PhpCommandSettingsBuilder.INTERPRETER_NOT_FOUND_ERROR);
         } else {
-            final PhpCommandSettings command = PhpCommandSettingsBuilder.create(project, interpreter, false);
+            final PhpCommandSettings commandSettings = PhpCommandSettingsBuilder.create(project, interpreter, false);
             return new CommandLineState(env) {
                 @NotNull
                 protected ProcessHandler startProcess() throws ExecutionException {
                     // Build the command.
-                    DrupalRunConfiguration.this.buildCommand(Collections.<String, String>emptyMap(), command);
-                    ProcessHandler processHandler = DrupalRunConfiguration.this.createProcessHandler(project, null, command);
+                    DrupalRunConfiguration.this.buildCommand(Collections.<String, String>emptyMap(), commandSettings);
+                    ProcessHandler processHandler = DrupalRunConfiguration.this.createProcessHandler(project, commandSettings);
                     PhpRunUtil.attachProcessOutputDebugDumper(processHandler);
                     ProcessTerminatedListener.attach(processHandler, project);
                     return processHandler;
@@ -159,7 +159,7 @@ class DrupalRunConfiguration extends PhpRefactoringListenerRunConfiguration<Drup
                     final ConsoleView console = createConsole(executor);
                     if (console != null) {
                         console.attachToProcess(processHandler);
-                        Filter[] filters = DrupalRunConfiguration.this.getConsoleMessageFilters(project, command.getPathProcessor().createPathMapper(project));
+                        Filter[] filters = DrupalRunConfiguration.this.getConsoleMessageFilters(project, commandSettings.getPathProcessor().createPathMapper(project));
                         for (Filter filter : filters) {
                             console.addMessageFilter(filter);
                         }

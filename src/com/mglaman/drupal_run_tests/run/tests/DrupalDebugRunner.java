@@ -62,17 +62,17 @@ public class DrupalDebugRunner extends PhpDebugRunner<DrupalRunConfiguration> {
             final String sessionId = debugServer.registerSessionHandler(false, connectionsManager);
 
             try {
-                final PhpCommandSettings e = PhpCommandSettingsBuilder.create(project, interpreter, true);
+                final PhpCommandSettings commandSettings = PhpCommandSettingsBuilder.create(project, interpreter, true);
                 Map<String, String> commandLineEnv = debugExtension.getDebugEnv(project, breakAtFirstLine, sessionId);
-                runConfiguration.buildCommand(commandLineEnv, e);
-                final ProcessHandler processHandler = runConfiguration.createProcessHandler(project, "drupalRunner", e);
+                runConfiguration.buildCommand(commandLineEnv, commandSettings);
+                final ProcessHandler processHandler = runConfiguration.createProcessHandler(project, commandSettings);
                 ProcessTerminatedListener.attach(processHandler, project);
                 XDebugSession debugSession = XDebuggerManager.getInstance(project).startSession(env, new XDebugProcessStarter() {
                     @NotNull
                     public XDebugProcess start(@NotNull XDebugSession session) {
-                        PhpScriptDebugRunner.onSessionStart(session, debugServer, sessionId, connectionsManager, project, e, interpreter, processHandler);
+                        PhpScriptDebugRunner.onSessionStart(session, debugServer, sessionId, connectionsManager, project, commandSettings, interpreter, processHandler);
                         PhpDebugDriver driver = debugExtension.getDebugDriver();
-                        return PhpDebugProcessFactory.forPhpScript(project, session, sessionId, connectionsManager, driver, e.getPathProcessor());
+                        return PhpDebugProcessFactory.forPhpScript(project, session, sessionId, connectionsManager, driver, commandSettings.getPathProcessor());
                     }
                 });
                 debugSession.getConsoleView().attachToProcess(processHandler);
