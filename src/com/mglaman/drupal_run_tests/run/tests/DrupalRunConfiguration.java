@@ -11,6 +11,7 @@ import com.intellij.execution.process.ProcessTerminatedListener;
 import com.intellij.execution.runners.ExecutionEnvironment;
 import com.intellij.execution.runners.ProgramRunner;
 import com.intellij.execution.ui.ConsoleView;
+import com.intellij.openapi.options.Configurable;
 import com.intellij.openapi.options.SettingsEditor;
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.util.text.StringUtil;
@@ -122,7 +123,7 @@ class DrupalRunConfiguration extends PhpRefactoringListenerRunConfiguration<Drup
     private static Runnable createDrupalFix(@NotNull final Project project) {
         return new Runnable() {
             public void run() {
-                PhpUiUtil.editConfigurable(project, new DrupalConfigurable(project));
+                PhpUiUtil.editConfigurable(project, (Configurable) new DrupalConfigurable(project));
             }
         };
     }

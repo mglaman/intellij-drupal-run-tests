@@ -25,8 +25,7 @@ Alternatively, you can clone down the project and build it yourself.
 
 ## Contributing
 
-See [Setting up an Environment](https://github.com/mglaman/intellij-drupal-run-tests/wiki/Setting-up-IntelliJ-IDEA-CE-for-development)
-
+See [Setting up an Environment](https://github.com/mglaman/intellij-drupal-run-tests/wiki/Setting-up-IntelliJ-IDEA-CE-for-development) and https://confluence.jetbrains.com/display/PhpStorm/Setting-up+environment+for+PhpStorm+plugin+development
 
 
 [home]: https://github.com/mglaman/intellij-drupal-run-tests

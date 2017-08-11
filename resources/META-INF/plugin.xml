@@ -1,4 +1,4 @@
-<idea-plugin version="2">
+<idea-plugin>
   <id>com.mglaman.drupal_run_tests</id>
   <name>Drupal Test Runner</name>
   <version>1.0-rc2</version>
