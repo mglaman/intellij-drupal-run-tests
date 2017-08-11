@@ -7,7 +7,6 @@
 .idea/libraries/
 .idea/.name
 .idea/*.png
-*.iml
 *.zip
 *.jar
 out

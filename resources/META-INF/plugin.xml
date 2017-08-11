@@ -1,7 +1,7 @@
 <idea-plugin>
   <id>com.mglaman.drupal_run_tests</id>
   <name>Drupal Test Runner</name>
-  <version>1.0-rc2</version>
+  <version>1.0</version>
   <vendor email="nmd.matt@gmail.com" url="https://glamanate.com">Matt Glaman</vendor>
 
   <description><![CDATA[
@@ -13,6 +13,10 @@ single runner.
     ]]></description>
 
   <change-notes><![CDATA[
+<p>1.0</p>
+<ul>
+<li>Update README.md and documentation</li>
+</ul>
 <p>1.0-rc3</p>
 <ul>
   <li>Only pass `--types` and other Drupal 8 flags if the project is for Drupal 8.</li>
