@@ -197,17 +197,6 @@ class DrupalRunConfiguration extends PhpRefactoringListenerRunConfiguration<Drup
         command.addArgument("--url");
         command.addArgument(settings.getSimpletestUrl());
 
-        if (settings.getSimpletestDb() != null && isDrupal8) {
-            command.addArgument("--dburl");
-            command.addArgument(settings.getSimpletestDb());
-        }
-
-        if (settings.isUsingSqlite() && isDrupal8) {
-            command.addArgument("--sqlite");
-            command.addArgument(settings.getSqliteDb());
-        }
-
-
         command.addArgument("--concurrency");
         command.addArgument(Integer.toString(settings.getTestConcurrency()));
 
@@ -217,18 +206,31 @@ class DrupalRunConfiguration extends PhpRefactoringListenerRunConfiguration<Drup
         if (settings.hasVerboseOutput()) {
             command.addArgument("--verbose");
         }
-        if (settings.hasDieOnFail() && isDrupal8) {
-            command.addArgument("--die-on-fail");
-        }
-        if (settings.hasRepeat() && isDrupal8) {
-            command.addArgument("--repeat");
-            command.addArgument(Integer.toString(settings.getRepeatCount()));
-        }
 
-        String testTypes = settings.getTestTypes();
-        if (null != testTypes && drupalDataService.getVersion() == DrupalVersion.EIGHT) {
-            command.addArgument("--types");
-            command.addArgument(testTypes);
+        if (isDrupal8) {
+            if (settings.getSimpletestDb() != null) {
+                command.addArgument("--dburl");
+                command.addArgument(settings.getSimpletestDb());
+            }
+
+            if (settings.isUsingSqlite()) {
+                command.addArgument("--sqlite");
+                command.addArgument(settings.getSqliteDb());
+            }
+
+            if (settings.hasDieOnFail()) {
+                command.addArgument("--die-on-fail");
+            }
+            if (settings.hasRepeat()) {
+                command.addArgument("--repeat");
+                command.addArgument(Integer.toString(settings.getRepeatCount()));
+            }
+
+            String testTypes = settings.getTestTypes();
+            if (testTypes != null) {
+                command.addArgument("--types");
+                command.addArgument(testTypes);
+            }
         }
 
         // @todo This saves each test result individually. Can we parse this.
@@ -266,8 +268,11 @@ class DrupalRunConfiguration extends PhpRefactoringListenerRunConfiguration<Drup
         private String myTestTypes = null;
         private PhpCommandLineSettings myCommandLineSettings = new PhpCommandLineSettings();
 
+        public Settings() {
+        }
+
         @Attribute("simpletest_url")
-        @NotNull
+        @Nullable
         public String getSimpletestUrl() {
             return this.mySimpletestUrl;
         }
