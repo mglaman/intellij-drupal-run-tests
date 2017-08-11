@@ -6,6 +6,7 @@ import com.intellij.execution.configurations.RunConfiguration;
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.util.IconLoader;
 import com.jetbrains.php.run.PhpRunConfigurationFactoryBase;
+import icons.DrupalIcons;
 import org.jetbrains.annotations.NotNull;
 
 import javax.swing.*;
@@ -37,7 +38,7 @@ public class DrupalRunConfigurationType implements ConfigurationType {
 
     @Override
     public Icon getIcon() {
-        return IconLoader.getIcon("/druplicon-small.png");
+        return DrupalIcons.Drupal;
     }
 
     @NotNull
