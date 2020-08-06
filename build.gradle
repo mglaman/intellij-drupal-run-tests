@@ -1,7 +1,10 @@
 import org.gradle.api.tasks.testing.logging.TestExceptionFormat
 
 plugins {
-    id "org.jetbrains.intellij" version "0.4.11"
+    // gradle-intellij-plugin - read more: https://github.com/JetBrains/gradle-intellij-plugin
+    id "org.jetbrains.intellij" version "0.4.21"
+    // gradle-changelog-plugin - read more: https://github.com/JetBrains/gradle-changelog-plugin
+    id "org.jetbrains.changelog" version "0.4.0"
     id 'com.palantir.git-version' version "0.12.3"
 }
 
