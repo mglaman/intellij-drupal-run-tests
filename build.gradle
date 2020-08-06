@@ -20,6 +20,8 @@ intellij {
     updateSinceUntilBuild false
     plugins = [
             "com.jetbrains.php:${phpPluginVersion}",
+            "com.jetbrains.plugins.ini4idea:${iniPluginVersion}",
+            "com.jetbrains.php.drupal:${drupalPluginVersion}",
             'coverage',
             'webDeployment',
             'yaml',
