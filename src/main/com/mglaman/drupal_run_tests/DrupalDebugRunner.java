@@ -2,7 +2,7 @@
  * Copyright (c) 2016.
  */
 
-package com.mglaman.drupal_run_tests.run.tests;
+package com.mglaman.drupal_run_tests;
 
 import com.intellij.execution.ExecutionException;
 import com.intellij.execution.configurations.RunProfileState;

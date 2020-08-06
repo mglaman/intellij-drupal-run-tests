@@ -1,4 +1,4 @@
-package com.mglaman.drupal_run_tests.run.tests;
+package com.mglaman.drupal_run_tests;
 
 import com.intellij.openapi.fileChooser.FileChooserDescriptorFactory;
 import com.intellij.openapi.options.ConfigurationException;
