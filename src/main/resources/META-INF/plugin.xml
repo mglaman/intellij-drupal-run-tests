@@ -74,16 +74,13 @@ single runner.
     ]]>
   </change-notes>
 
-  <!-- please see http://www.jetbrains.org/intellij/sdk/docs/basics/getting_started/build_number_ranges.html for description -->
-  <idea-version since-build="141.0"/>
-
   <depends>com.jetbrains.php</depends>
   <depends>com.jetbrains.php.drupal</depends>
   <depends>com.intellij.modules.platform</depends>
 
   <extensions defaultExtensionNs="com.intellij">
-    <configurationType implementation="com.mglaman.drupal_run_tests.run.tests.DrupalRunConfigurationType"/>
-    <programRunner implementation="com.mglaman.drupal_run_tests.run.tests.DrupalDebugRunner"/>
+    <configurationType implementation="com.mglaman.drupal_run_tests.DrupalRunConfigurationType"/>
+    <programRunner implementation="com.mglaman.drupal_run_tests.DrupalDebugRunner"/>
   </extensions>
 
   <actions>

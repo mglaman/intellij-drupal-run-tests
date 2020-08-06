@@ -1,4 +1,4 @@
-package com.mglaman.drupal_run_tests.run.tests;
+package com.mglaman.drupal_run_tests;
 
 import com.intellij.execution.configurations.ConfigurationFactory;
 import com.intellij.execution.configurations.ConfigurationType;
